@@ -1,0 +1,8 @@
+/home/vlad/projects/VectorEditor/VectorEditor/VectorEditor/obj/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/home/vlad/projects/VectorEditor/VectorEditor/VectorEditor/obj/Debug/VectorEditor.Form1.resources
+/home/vlad/projects/VectorEditor/VectorEditor/VectorEditor/obj/Debug/VectorEditor.Properties.Resources.resources
+/home/vlad/projects/VectorEditor/VectorEditor/VectorEditor/bin/Debug/VectorEditor.exe.config
+/home/vlad/projects/VectorEditor/VectorEditor/VectorEditor/bin/Debug/VectorEditor.exe.mdb
+/home/vlad/projects/VectorEditor/VectorEditor/VectorEditor/bin/Debug/VectorEditor.exe
+/home/vlad/projects/VectorEditor/VectorEditor/VectorEditor/obj/Debug/VectorEditor.exe
+/home/vlad/projects/VectorEditor/VectorEditor/VectorEditor/obj/Debug/VectorEditor.exe.mdb

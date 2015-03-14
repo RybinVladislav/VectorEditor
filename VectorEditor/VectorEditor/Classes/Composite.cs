@@ -11,13 +11,13 @@ namespace VectorEditor
 
 	public interface IComposite : IComponent
 	{
-		void Operation();
-		void Add(IComponent element);
-		void Remove(IComponent element);
+		new void Operation();
+		new void Add(IComponent element);
+		new void Remove(IComponent element);
 	}
 	public interface ILeaf : IComponent
 	{
-		void Operation ();
+		new void Operation ();
 	}
 }
 
