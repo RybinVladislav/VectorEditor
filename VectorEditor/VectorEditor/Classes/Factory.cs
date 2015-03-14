@@ -10,7 +10,6 @@ namespace VectorEditor.Classes
     public interface IFigureFactory {
         IEllipse CreateEllipse();
         IRectangle CreateRectangle();
-        ILine CreateLine();
         ICurve CreateCurve();
         IPolygon CreatePolygon();
     }
@@ -23,11 +22,6 @@ namespace VectorEditor.Classes
         }
 
         public IRectangle CreateRectangle()
-        {
-            throw new NotImplementedException();
-        }
-
-        public ILine CreateLine()
         {
             throw new NotImplementedException();
         }

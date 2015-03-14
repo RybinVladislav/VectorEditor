@@ -35,27 +35,25 @@ namespace VectorEditor
         float Height { get; set; }
     }
 
-    public interface ILine : IFigure
+    public struct CurveCoords
     {
-        PointF P1 { get; set; }
-        PointF P2 { get; set; }
-    }
+        public PointF P1;
+        public PointF P2;
+        public PointF P;
 
-    public interface ICurveCoords
-    {
-        // control points
-        PointF P1 { get; set; }
-        PointF P2 { get; set; }
-
-        // end of curve
-        PointF P { get; set; }
+        public CurveCoords(PointF p1, PointF p2, PointF p)
+        {
+            P1 = p1;
+            P2 = p2;
+            P = p;
+        }
     }
 
     public interface ICurve : IFigure 
     {
         PointF Start { get; set; }
 
-        IList<ICurveCoords> Curves { get; set; }
+        IList<CurveCoords> Curves { get; set; }
     }
 
     public interface IPolygon : IFigure 

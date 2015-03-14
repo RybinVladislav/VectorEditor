@@ -57,201 +57,112 @@ namespace VectorEditor
 
         public float StrokeWidth { get; set; }
 
-        public IFigure Clone()
+        public Rectangle(float top, float left, float width, float height, Color fillColor, Color strokeColor, float strokeWidth)
         {
-            throw new NotImplementedException();
+            Top = top;
+            Left = left;
+            Width = width;
+            Height = height;
+            FillColor = fillColor;
+            StrokeColor = strokeColor;
+            StrokeWidth = strokeWidth;
         }
-    }
-
-    public class Line : ILine
-    {
-        public PointF P1
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public PointF P2
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public Color FillColor
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public Color StrokeColor
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public float StrokeWidth
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public Rectangle(float top, float left, float width, float height, Color fillColor, Color strokeColor)
+            : this(top, left, width, height, fillColor, strokeColor, 1F) { }
+        public Rectangle(float top, float left, float width, float height)
+            : this(top, left, width, height, Color.Transparent, Color.Black, 1F) { }
 
         public IFigure Clone()
         {
-            throw new NotImplementedException();
+            return new Rectangle(Top, Left, Width, Height, FillColor, StrokeColor, StrokeWidth);
         }
     }
+
 
     public class Curve : ICurve 
     {
-        public PointF Start
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public PointF Start { get; set; }
 
-        public IList<ICurveCoords> Curves
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public IList<CurveCoords> Curves { get; set; }
 
-        public Color FillColor
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public Color FillColor { get; set; }
 
-        public Color StrokeColor
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public Color StrokeColor { get; set; }
 
-        public float StrokeWidth
+        public float StrokeWidth { get; set; }
+
+        public Curve(PointF start, IList<CurveCoords> curves, Color fillColor, Color strokeColor, float strokeWidth)
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            Start = start;
+            Curves = curves;
+            FillColor = fillColor;
+            StrokeColor = strokeColor;
+            StrokeWidth = strokeWidth;
         }
+        public Curve(PointF start, IList<CurveCoords> curves, Color fillColor, Color strokeColor)
+            : this(start, curves, fillColor, strokeColor, 1F) { }
+        public Curve(PointF start, IList<CurveCoords> curves)
+            : this(start, curves, Color.Transparent, Color.Black, 1F) { }
+        
+        public Curve(PointF start, CurveCoords curve, Color fillColor, Color strokeColor, float strokeWidth)
+        {
+            Start = start;
+            Curves = new List<CurveCoords>();
+            Curves.Add(curve);
+            FillColor = fillColor;
+            StrokeColor = strokeColor;
+            StrokeWidth = strokeWidth;
+        }
+        public Curve(PointF start, CurveCoords curve, Color fillColor, Color strokeColor)
+            : this(start, curve, fillColor, strokeColor, 1F) { }
+        public Curve(PointF start, CurveCoords curve)
+            : this(start, curve, Color.Transparent, Color.Black, 1F) { }
+
+        public Curve(PointF start, Color fillColor, Color strokeColor, float strokeWidth)
+        {
+            Start = start;
+            Curves = new List<CurveCoords>();
+            FillColor = fillColor;
+            StrokeColor = strokeColor;
+            StrokeWidth = strokeWidth;
+        }
+        public Curve(PointF start, Color fillColor, Color strokeColor)
+            : this(start, fillColor, strokeColor, 1F) { }
+        public Curve(PointF start)
+            : this(start, Color.Transparent, Color.Black, 1F) { }
 
         public IFigure Clone()
         {
-            throw new NotImplementedException();
+            return new Curve(Start, Curves, FillColor, StrokeColor, StrokeWidth);
         }
     }
 
     public class Polygon : IPolygon
     {
-        public IList<PointF> Points
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public IList<PointF> Points { get; set; }
 
-        public Color FillColor
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public Color FillColor { get; set; }
 
-        public Color StrokeColor
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public Color StrokeColor { get; set; }
 
-        public float StrokeWidth
+        public float StrokeWidth { get; set; }
+
+        public Polygon(IList<PointF> points, Color fillColor, Color strokeColor, float strokeWidth)
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            if (points.Count < 3) throw new ArgumentException();
+            Points = points;
+            FillColor = fillColor;
+            StrokeColor = strokeColor;
+            StrokeWidth = strokeWidth;
         }
+        public Polygon(IList<PointF> points, Color fillColor, Color strokeColor)
+            : this(points, fillColor, strokeColor, 1F) { }
+        public Polygon(IList<PointF> points)
+            : this(points, Color.Transparent, Color.Black, 1F) { }
 
         public IFigure Clone()
         {
-            throw new NotImplementedException();
+            return new Polygon(Points, FillColor, StrokeColor, StrokeWidth);
         }
     }
 }
