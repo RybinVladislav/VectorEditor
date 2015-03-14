@@ -8,3 +8,6 @@ C:\Users\Vladislav\Documents\Visual Studio 2015\VectorEditor\VectorEditor\Vector
 C:\Users\Vladislav\Documents\Visual Studio 2015\VectorEditor\VectorEditor\VectorEditor\obj\Debug\VectorEditor.exe
 C:\Users\Vladislav\Documents\Visual Studio 2015\VectorEditor\VectorEditor\VectorEditor\obj\Debug\VectorEditor.pdb
 C:\Users\Vladislav\Documents\Visual Studio 2015\VectorEditor\VectorEditor\VectorEditor\obj\Debug\VectorEditor.Form1.resources
+C:\Users\fgnmgm\Documents\GitHub\VectorEditor\VectorEditor\VectorEditor\bin\Debug\VectorEditor.exe.config
+C:\Users\fgnmgm\Documents\GitHub\VectorEditor\VectorEditor\VectorEditor\obj\Debug\VectorEditor.exe
+C:\Users\fgnmgm\Documents\GitHub\VectorEditor\VectorEditor\VectorEditor\obj\Debug\VectorEditor.pdb
