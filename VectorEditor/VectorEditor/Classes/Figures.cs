@@ -86,7 +86,7 @@ namespace VectorEditor
         public void Draw(Graphics g)
         {
             g.FillRectangle(new SolidBrush(FillColor), Left, Top, Width, Height);
-            g.DrawEllipse(new Pen(StrokeColor, StrokeWidth), Left, Top, Width, Height);
+            g.DrawRectangle(new Pen(StrokeColor, StrokeWidth), Left, Top, Width, Height);
         }
     }
 

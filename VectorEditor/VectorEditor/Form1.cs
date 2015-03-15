@@ -58,6 +58,7 @@ namespace VectorEditor
         Instrument currentInstument = Instrument.None;
         bool isDrawing = false;
         float x0, y0, x, y;
+        IList<PointF> listPoints = new List<PointF>();
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
@@ -76,6 +77,11 @@ namespace VectorEditor
                     vectorImage.InsertingFigure = factory.CreateEllipse(new PointF(e.X, e.Y), 0, 0, fillColor, strokeColor, strokeWidth);
                     Draw();
                     break;
+                case Instrument.Rectangle:
+                    isDrawing = true;
+                    vectorImage.InsertingFigure = factory.CreateRectangle(y0, x0, 0, 0, fillColor, strokeColor, strokeWidth);
+                    Draw();
+                    break;
             }
         }
 
@@ -88,6 +94,11 @@ namespace VectorEditor
                 {
                     case Instrument.Ellipse:
                         vectorImage.InsertingFigure = factory.CreateEllipse(new PointF((x0 + x) / 2, (y0 + y) / 2), Math.Abs(x0 - x) / 2, Math.Abs(y0 - y) / 2,
+                            fillColor, strokeColor, strokeWidth);
+                        Draw();
+                        break;
+                    case Instrument.Rectangle:
+                        vectorImage.InsertingFigure = factory.CreateRectangle(Math.Min(y0, y), Math.Min(x0, x), Math.Abs(x - x0), Math.Abs(y - y0), 
                             fillColor, strokeColor, strokeWidth);
                         Draw();
                         break;
@@ -109,6 +120,13 @@ namespace VectorEditor
                             fillColor, strokeColor, strokeWidth);
                         Draw();
                         break;
+                    case Instrument.Rectangle:
+                        vectorImage.InsertingFigure = null;
+                        isDrawing = false;
+                        vectorImage.AddRectangle(factory, Math.Min(y0, y), Math.Min(x0, x), Math.Abs(x - x0), Math.Abs(y - y0),
+                            fillColor, strokeColor, strokeWidth);
+                        Draw();
+                        break;
                 }
             }
         }
@@ -116,6 +134,16 @@ namespace VectorEditor
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
             currentInstument = Instrument.None;
+        }
+
+        private void toolStripButton3_Click(object sender, EventArgs e)
+        {
+            currentInstument = Instrument.Rectangle;
+        }
+
+        private void toolStripButton4_Click(object sender, EventArgs e)
+        {
+            currentInstument = Instrument.Polygon;
         }
     }
 }

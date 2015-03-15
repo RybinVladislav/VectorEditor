@@ -37,7 +37,7 @@ namespace VectorEditor
         float Left { get; set; }
    
         float Width { get; set; }
-        float Height { get; set; }
+        float Height { get; set; } 
     }
 
     public struct CurveCoords
