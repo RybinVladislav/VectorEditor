@@ -7,11 +7,7 @@ using System.Drawing;
 
 namespace VectorEditor
 {
-<<<<<<< HEAD
-    public class Ellipse : IEllipse, Component
-=======
-	public class Ellipse : Component, IEllipse
->>>>>>> origin/master
+    public class Ellipse : Component, IEllipse
     {
         public PointF Center { get; set; }
 
@@ -51,11 +47,7 @@ namespace VectorEditor
         }
     }
 
-<<<<<<< HEAD
-    public class Rectangle : IRectangle, Component
-=======
-	public class Rectangle : Component, IRectangle
->>>>>>> origin/master
+    public class Rectangle : Component, IRectangle
     {
         public float Top { get; set; }
 
@@ -97,14 +89,8 @@ namespace VectorEditor
             g.DrawEllipse(new Pen(StrokeColor, StrokeWidth), Left, Top, Width, Height);
         }
     }
-<<<<<<< HEAD
 
-
-    public class CurvePath : ICurvePath, Component
-=======
-		
-	public class CurvePath : Component, ICurvePath
->>>>>>> origin/master
+    public class CurvePath : Component, ICurvePath
     {
         public PointF Start { get; set; }
 
@@ -177,11 +163,7 @@ namespace VectorEditor
         }
     }
 
-<<<<<<< HEAD
-    public class Polygon : IPolygon, Component
-=======
-	public class Polygon : Component, IPolygon
->>>>>>> origin/master
+    public class Polygon : Component, IPolygon
     {
         public IList<PointF> Points { get; set; }
 
@@ -213,54 +195,6 @@ namespace VectorEditor
         {
             g.FillPolygon(new SolidBrush(FillColor), Points.ToArray());
             g.DrawPolygon(new Pen(StrokeColor, StrokeWidth), Points.ToArray());
-        }
-    }
-
-    public class CompositeFigure : IComposite
-    {
-        public IComponent GetChild()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Operation()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Add(IComponent element)
-        {
-            this.Children.Add(element);
-            element.Parent = this;
-        }
-
-        public void Remove(IComponent element)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IComponent Parent
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public List<IComponent> Children
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
         }
     }
 
@@ -310,6 +244,18 @@ namespace VectorEditor
 				throw new NotImplementedException ();
 			}
 		}
-	}
+
+        IList<IComponent> IComposite.Children
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+    }
 }
 
