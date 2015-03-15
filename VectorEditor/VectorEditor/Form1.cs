@@ -55,14 +55,14 @@ namespace VectorEditor
             CurvePath
         }
 
-        Instrument currentInstument = Instrument.None;
+        Instrument currentInstrument = Instrument.None;
         bool isDrawing = false;
         float x0, y0, x, y;
         IList<PointF> listPoints = new List<PointF>();
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            currentInstument = Instrument.Ellipse;
+            currentInstrument = Instrument.Ellipse;
         }
 
         private void panel1_MouseDown(object sender, MouseEventArgs e)
@@ -70,7 +70,7 @@ namespace VectorEditor
             x0 = e.X;
             y0 = e.Y;
 
-            switch (currentInstument)
+            switch (currentInstrument)
             {
                 case Instrument.Ellipse :
                     isDrawing = true;
@@ -90,7 +90,7 @@ namespace VectorEditor
             if (isDrawing)
             {
                 x = e.X; y = e.Y;
-                switch (currentInstument)
+                switch (currentInstrument)
                 {
                     case Instrument.Ellipse:
                         vectorImage.InsertingFigure = factory.CreateEllipse(new PointF((x0 + x) / 2, (y0 + y) / 2), Math.Abs(x0 - x) / 2, Math.Abs(y0 - y) / 2,
@@ -111,7 +111,7 @@ namespace VectorEditor
             if (isDrawing)
             {
                 x = e.X; y = e.Y;
-                switch (currentInstument)
+                switch (currentInstrument)
                 {
                     case Instrument.Ellipse:
                         vectorImage.InsertingFigure = null;
@@ -133,7 +133,7 @@ namespace VectorEditor
 
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
-            currentInstument = Instrument.None;
+            currentInstrument = Instrument.None;
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e)
