@@ -138,12 +138,12 @@ namespace VectorEditor
 
         private void toolStripButton3_Click(object sender, EventArgs e)
         {
-            currentInstument = Instrument.Rectangle;
+            currentInstrument = Instrument.Rectangle;
         }
 
         private void toolStripButton4_Click(object sender, EventArgs e)
         {
-            currentInstument = Instrument.Polygon;
+            currentInstrument = Instrument.Polygon;
         }
     }
 }
