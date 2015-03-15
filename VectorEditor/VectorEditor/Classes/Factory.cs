@@ -16,7 +16,6 @@ namespace VectorEditor
 
 	public class Factory : IFigureFactory
     {
-
         public IEllipse CreateEllipse(PointF center, float radiusX, float radiusY, Color fillColor, Color strokeColor, float strokeWidth)
         {
             return new Ellipse(center, radiusX, radiusY, fillColor, strokeColor, strokeWidth);
