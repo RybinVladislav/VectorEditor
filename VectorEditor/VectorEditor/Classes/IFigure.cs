@@ -49,7 +49,7 @@ namespace VectorEditor
         }
     }
 
-    public interface ICurve : IFigure 
+    public interface ICurvePath : IFigure 
     {
         PointF Start { get; set; }
 

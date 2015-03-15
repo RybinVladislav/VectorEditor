@@ -79,7 +79,7 @@ namespace VectorEditor
     }
 
 
-    public class Curve : ICurve 
+    public class CurvePath : ICurvePath 
     {
         public PointF Start { get; set; }
 
@@ -91,7 +91,7 @@ namespace VectorEditor
 
         public float StrokeWidth { get; set; }
 
-        public Curve(PointF start, IList<CurveCoords> curves, Color fillColor, Color strokeColor, float strokeWidth)
+        public CurvePath(PointF start, IList<CurveCoords> curves, Color fillColor, Color strokeColor, float strokeWidth)
         {
             Start = start;
             Curves = curves;
@@ -99,12 +99,12 @@ namespace VectorEditor
             StrokeColor = strokeColor;
             StrokeWidth = strokeWidth;
         }
-        public Curve(PointF start, IList<CurveCoords> curves, Color fillColor, Color strokeColor)
+        public CurvePath(PointF start, IList<CurveCoords> curves, Color fillColor, Color strokeColor)
             : this(start, curves, fillColor, strokeColor, 1F) { }
-        public Curve(PointF start, IList<CurveCoords> curves)
+        public CurvePath(PointF start, IList<CurveCoords> curves)
             : this(start, curves, Color.Transparent, Color.Black, 1F) { }
         
-        public Curve(PointF start, CurveCoords curve, Color fillColor, Color strokeColor, float strokeWidth)
+        public CurvePath(PointF start, CurveCoords curve, Color fillColor, Color strokeColor, float strokeWidth)
         {
             Start = start;
             Curves = new List<CurveCoords>();
@@ -113,12 +113,12 @@ namespace VectorEditor
             StrokeColor = strokeColor;
             StrokeWidth = strokeWidth;
         }
-        public Curve(PointF start, CurveCoords curve, Color fillColor, Color strokeColor)
+        public CurvePath(PointF start, CurveCoords curve, Color fillColor, Color strokeColor)
             : this(start, curve, fillColor, strokeColor, 1F) { }
-        public Curve(PointF start, CurveCoords curve)
+        public CurvePath(PointF start, CurveCoords curve)
             : this(start, curve, Color.Transparent, Color.Black, 1F) { }
 
-        public Curve(PointF start, Color fillColor, Color strokeColor, float strokeWidth)
+        public CurvePath(PointF start, Color fillColor, Color strokeColor, float strokeWidth)
         {
             Start = start;
             Curves = new List<CurveCoords>();
@@ -126,14 +126,14 @@ namespace VectorEditor
             StrokeColor = strokeColor;
             StrokeWidth = strokeWidth;
         }
-        public Curve(PointF start, Color fillColor, Color strokeColor)
+        public CurvePath(PointF start, Color fillColor, Color strokeColor)
             : this(start, fillColor, strokeColor, 1F) { }
-        public Curve(PointF start)
+        public CurvePath(PointF start)
             : this(start, Color.Transparent, Color.Black, 1F) { }
 
         public IFigure Clone()
         {
-            return new Curve(Start, Curves, FillColor, StrokeColor, StrokeWidth);
+            return new CurvePath(Start, Curves, FillColor, StrokeColor, StrokeWidth);
         }
     }
 
