@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 
-namespace VectorEditor.Classes
+namespace VectorEditor
 {
     public class VectorImage
     {

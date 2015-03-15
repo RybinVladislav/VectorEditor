@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace VectorEditor
 {
-    public class Ellipse : IEllipse 
+	public class Ellipse : Component, IEllipse
     {
         public PointF Center { get; set; }
 
@@ -41,7 +41,7 @@ namespace VectorEditor
         }
     }
 
-    public class Rectangle : IRectangle 
+	public class Rectangle : Component, IRectangle
     {
         public float Top { get; set; }
 
@@ -77,9 +77,8 @@ namespace VectorEditor
             return new Rectangle(Top, Left, Width, Height, FillColor, StrokeColor, StrokeWidth);
         }
     }
-
-
-    public class CurvePath : ICurvePath 
+		
+	public class CurvePath : Component, ICurvePath
     {
         public PointF Start { get; set; }
 
@@ -137,7 +136,7 @@ namespace VectorEditor
         }
     }
 
-    public class Polygon : IPolygon
+	public class Polygon : Component, IPolygon
     {
         public IList<PointF> Points { get; set; }
 
@@ -165,4 +164,53 @@ namespace VectorEditor
             return new Polygon(Points, FillColor, StrokeColor, StrokeWidth);
         }
     }
+
+	public class CompositeFigure : IComposite
+	{
+		public IComponent GetChild ()
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void Operation ()
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void Add (IComponent element)
+		{
+			this.Children.Add (element);
+			element.Parent = this;
+		}
+
+		public void Remove (IComponent element)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public IComponent Parent
+		{
+			get
+			{
+				throw new NotImplementedException ();
+			}
+			set
+			{
+				throw new NotImplementedException ();
+			}
+		}
+
+		public List<IComponent> Children
+		{
+			get
+			{
+				throw new NotImplementedException ();
+			}
+			set
+			{
+				throw new NotImplementedException ();
+			}
+		}
+	}
 }
+
