@@ -7,7 +7,12 @@ using System.Drawing;
 
 namespace VectorEditor
 {
-    public interface IFigure 
+    public interface IDrawable
+    {
+        void Draw(Graphics g);
+    }
+    
+    public interface IFigure : IDrawable
     {
         Color FillColor { get; set; }
         Color StrokeColor { get; set; }

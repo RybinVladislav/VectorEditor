@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 
-namespace VectorEditor.Classes
+namespace VectorEditor
 {
-    public class VectorImage
+    public class VectorImage : IDrawable
     {
         private IList<IFigure> figures;
 
@@ -17,7 +17,9 @@ namespace VectorEditor.Classes
             set { figures = value; }
         }
 
-        public int selectedFigure { get; set; }
+        public IFigure InsertingFigure { get; set; }
+
+        private int selectedFigure;
 
         public VectorImage()
         {
@@ -50,6 +52,15 @@ namespace VectorEditor.Classes
         {
             foreach (IFigure element in selectedElements)
                 figures.Add(element.Clone());
+        }
+
+        public void Draw(Graphics g)
+        {
+            foreach (IFigure element in Figures)
+                element.Draw(g);
+
+            if (InsertingFigure != null)
+                InsertingFigure.Draw(g);
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace VectorEditor
 {
-    public class Ellipse : IEllipse 
+    public class Ellipse : IEllipse, Component
     {
         public PointF Center { get; set; }
 
@@ -39,9 +39,15 @@ namespace VectorEditor
         {
             return new Ellipse(Center, RadiusX, RadiusY, FillColor, StrokeColor, StrokeWidth);
         }
+
+        public void Draw(Graphics g)
+        {
+            g.FillEllipse(new SolidBrush(FillColor), Center.X - RadiusX, Center.Y - RadiusY, 2 * RadiusX, 2 * RadiusY);
+            g.DrawEllipse(new Pen(StrokeColor, StrokeWidth), Center.X - RadiusX, Center.Y - RadiusY, 2 * RadiusX, 2 * RadiusY);
+        }
     }
 
-    public class Rectangle : IRectangle 
+    public class Rectangle : IRectangle, Component
     {
         public float Top { get; set; }
 
@@ -76,10 +82,16 @@ namespace VectorEditor
         {
             return new Rectangle(Top, Left, Width, Height, FillColor, StrokeColor, StrokeWidth);
         }
+
+        public void Draw(Graphics g)
+        {
+            g.FillRectangle(new SolidBrush(FillColor), Left, Top, Width, Height);
+            g.DrawEllipse(new Pen(StrokeColor, StrokeWidth), Left, Top, Width, Height);
+        }
     }
 
 
-    public class CurvePath : ICurvePath 
+    public class CurvePath : ICurvePath, Component
     {
         public PointF Start { get; set; }
 
@@ -135,9 +147,24 @@ namespace VectorEditor
         {
             return new CurvePath(Start, Curves, FillColor, StrokeColor, StrokeWidth);
         }
+
+        public void Draw(Graphics g)
+        {
+            PointF start = Start;
+
+            // ???
+            // idk how to fill inside curve path
+
+            foreach (CurveCoords curve in Curves)
+            {
+                g.DrawBezier(new Pen(StrokeColor, StrokeWidth), start, curve.P1, curve.P2, curve.P);
+                start = curve.P;
+            }
+
+        }
     }
 
-    public class Polygon : IPolygon
+    public class Polygon : IPolygon, Component
     {
         public IList<PointF> Points { get; set; }
 
@@ -163,6 +190,60 @@ namespace VectorEditor
         public IFigure Clone()
         {
             return new Polygon(Points, FillColor, StrokeColor, StrokeWidth);
+        }
+
+        public void Draw(Graphics g)
+        {
+            g.FillPolygon(new SolidBrush(FillColor), Points.ToArray());
+            g.DrawPolygon(new Pen(StrokeColor, StrokeWidth), Points.ToArray());
+        }
+    }
+
+    public class CompositeFigure : IComposite
+    {
+        public IComponent GetChild()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Operation()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Add(IComponent element)
+        {
+            this.Children.Add(element);
+            element.Parent = this;
+        }
+
+        public void Remove(IComponent element)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IComponent Parent
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public List<IComponent> Children
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 
-namespace VectorEditor.Classes
+namespace VectorEditor
 {
     public interface IFigureFactory {
 		IEllipse CreateEllipse(PointF center, float radiusX, float radiusY, Color fillColor, Color strokeColor, float strokeWidth);
@@ -38,7 +38,7 @@ namespace VectorEditor.Classes
 			{
             	return new Polygon(points, fillColor, strokeColor, strokeWidth);
 			}
-			catch (ArgumentException e)
+			catch (ArgumentException)
 			{
                 return null;
 			}
