@@ -34,13 +34,13 @@ namespace VectorEditor.Classes
 
         public IPolygon CreatePolygon(IList<PointF> points, Color fillColor, Color strokeColor, float strokeWidth)
         {
-			try
+            try
 			{
             	return new Polygon(points, fillColor, strokeColor, strokeWidth);
 			}
 			catch (ArgumentException e)
 			{
-				//Caught exception to avoid crashing
+                return null;
 			}
         }
     }
