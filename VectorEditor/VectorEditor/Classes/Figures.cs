@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace VectorEditor
 {
@@ -151,15 +152,22 @@ namespace VectorEditor
         {
             PointF start = Start;
 
-            // ???
-            // idk how to fill inside curve path
+            PointF[] pointArray = new PointF[1] { Start };
 
             foreach (CurveCoords curve in Curves)
             {
-                g.DrawBezier(new Pen(StrokeColor, StrokeWidth), start, curve.P1, curve.P2, curve.P);
-                start = curve.P;
+                int n = pointArray.Length;
+                Array.Resize(ref pointArray, n + 3);
+                pointArray[n] = curve.P1;
+                pointArray[n + 1] = curve.P2;
+                pointArray[n + 2] = curve.P;
             }
 
+            GraphicsPath path = new GraphicsPath();
+            path.AddBeziers(pointArray);
+
+            g.DrawPath(new Pen(StrokeColor, StrokeWidth), path);
+            g.FillPath(new SolidBrush(FillColor), path);
         }
     }
 
