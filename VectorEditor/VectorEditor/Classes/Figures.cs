@@ -41,10 +41,10 @@ namespace VectorEditor
             return new Ellipse(Center, RadiusX, RadiusY, FillColor, StrokeColor, StrokeWidth);
         }
 
-        public void Draw(Graphics g)
+        public void Draw(Graphics g, float scale)
         {
-            g.FillEllipse(new SolidBrush(FillColor), Center.X - RadiusX, Center.Y - RadiusY, 2 * RadiusX, 2 * RadiusY);
-            g.DrawEllipse(new Pen(StrokeColor, StrokeWidth), Center.X - RadiusX, Center.Y - RadiusY, 2 * RadiusX, 2 * RadiusY);
+            g.FillEllipse(new SolidBrush(FillColor), scale * (Center.X - RadiusX), scale * (Center.Y - RadiusY), scale * 2 * RadiusX, scale * 2 * RadiusY);
+            g.DrawEllipse(new Pen(StrokeColor, StrokeWidth), scale * (Center.X - RadiusX), scale * (Center.Y - RadiusY), scale * 2 * RadiusX, scale * 2 * RadiusY);
         }
     }
 
@@ -84,10 +84,10 @@ namespace VectorEditor
             return new Rectangle(Top, Left, Width, Height, FillColor, StrokeColor, StrokeWidth);
         }
 
-        public void Draw(Graphics g)
+        public void Draw(Graphics g, float scale)
         {
-            g.FillRectangle(new SolidBrush(FillColor), Left, Top, Width, Height);
-            g.DrawRectangle(new Pen(StrokeColor, StrokeWidth), Left, Top, Width, Height);
+            g.FillRectangle(new SolidBrush(FillColor), scale * Left, scale * Top, scale * Width, scale * Height);
+            g.DrawRectangle(new Pen(StrokeColor, StrokeWidth), scale * Left, scale * Top, scale * Width, scale * Height);
         }
     }
 
@@ -148,26 +148,24 @@ namespace VectorEditor
             return new CurvePath(Start, Curves, FillColor, StrokeColor, StrokeWidth);
         }
 
-        public void Draw(Graphics g)
+        public void Draw(Graphics g, float scale)
         {
-            PointF start = Start;
-
-            PointF[] pointArray = new PointF[1] { Start };
+            PointF[] pointArray = new PointF[1] { new PointF(scale * Start.X, scale * Start.Y) };
 
             foreach (CurveCoords curve in Curves)
             {
                 int n = pointArray.Length;
                 Array.Resize(ref pointArray, n + 3);
-                pointArray[n] = curve.P1;
-                pointArray[n + 1] = curve.P2;
-                pointArray[n + 2] = curve.P;
+                pointArray[n] = new PointF(scale * curve.P1.X, scale * curve.P1.Y);
+                pointArray[n + 1] = new PointF(scale * curve.P2.X, scale * curve.P2.Y);
+                pointArray[n + 2] = new PointF(scale * curve.P.X, scale * curve.P.Y);
             }
 
             GraphicsPath path = new GraphicsPath();
             path.AddBeziers(pointArray);
 
-            g.DrawPath(new Pen(StrokeColor, StrokeWidth), path);
             g.FillPath(new SolidBrush(FillColor), path);
+            g.DrawPath(new Pen(StrokeColor, StrokeWidth), path);
         }
     }
 
@@ -199,8 +197,10 @@ namespace VectorEditor
             return new Polygon(Points, FillColor, StrokeColor, StrokeWidth);
         }
 
-        public void Draw(Graphics g)
+        public void Draw(Graphics g, float scale)
         {
+            PointF[] pointArray = Points.ToArray();
+            Array.ForEach(pointArray, (p) => { p = new PointF(p.X * scale, p.Y * scale); });
             g.FillPolygon(new SolidBrush(FillColor), Points.ToArray());
             g.DrawPolygon(new Pen(StrokeColor, StrokeWidth), Points.ToArray());
         }

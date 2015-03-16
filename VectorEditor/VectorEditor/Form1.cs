@@ -20,9 +20,16 @@ namespace VectorEditor
         public VectorImage vectorImage = new VectorImage();
         private Factory factory = new Factory();
 
-        public Color fillColor = Color.Transparent;
+        public Color fillColor = Color.Red;
         public Color strokeColor = Color.Black;
         public float strokeWidth = 2F;
+
+        float scale = 1;
+
+        public bool isNear(PointF p1, PointF p2, float r)
+        {
+            return (p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y) <= r * r;
+        }
 
         public void Draw()
         {
@@ -33,7 +40,7 @@ namespace VectorEditor
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
 
             g.Clear(Color.White);
-            vectorImage.Draw(g);
+            vectorImage.Draw(g, scale);
 
             s.DrawImage(bmp, 0, 0, panel1.Width, panel1.Height);
             g.Dispose();
@@ -58,7 +65,8 @@ namespace VectorEditor
         Instrument currentInstrument = Instrument.None;
         bool isDrawing = false;
         float x0, y0, x, y;
-        IList<PointF> listPoints = new List<PointF>();
+        IList<CurveCoords> curvePoints = new List<CurveCoords>();
+        PointF curveStart = PointF.Empty;
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
@@ -102,15 +110,21 @@ namespace VectorEditor
                             fillColor, strokeColor, strokeWidth);
                         Draw();
                         break;
+                    case Instrument.CurvePath:
+                        curvePoints.RemoveAt(curvePoints.Count - 1);
+                        curvePoints.Add(new CurveCoords(curvePoints[curvePoints.Count - 1].P, new PointF(x, y), new PointF(x, y)));
+                        vectorImage.InsertingFigure = factory.CreateCurvePath(curveStart, curvePoints, Color.Transparent, strokeColor, strokeWidth);
+                        Draw();
+                        break;
                 }
             }
         }
 
         private void panel1_MouseUp(object sender, MouseEventArgs e)
         {
+            x = e.X; y = e.Y;
             if (isDrawing)
             {
-                x = e.X; y = e.Y;
                 switch (currentInstrument)
                 {
                     case Instrument.Ellipse:
@@ -129,6 +143,41 @@ namespace VectorEditor
                         break;
                 }
             }
+            if (currentInstrument == Instrument.CurvePath)
+            {
+                if (curveStart.IsEmpty && !isDrawing)
+                {
+                    curveStart = new PointF(x, y);
+                    isDrawing = true;
+                    curvePoints = new List<CurveCoords>();
+                    curvePoints.Add(new CurveCoords(curveStart, new PointF(x, y), new PointF(x, y)));
+                    curvePoints.Add(new CurveCoords(new PointF(x, y), new PointF(x, y), new PointF(x, y)));
+                    vectorImage.InsertingFigure = factory.CreateCurvePath(curveStart, curvePoints, Color.Transparent, strokeColor, strokeWidth);
+                    Draw();
+                }
+                else
+                {
+                    if (isNear(curveStart, new PointF(x, y), 10)) 
+                    {
+                        curvePoints.RemoveAt(curvePoints.Count - 1);
+                        curvePoints.Add(new CurveCoords(curvePoints[curvePoints.Count - 1].P, curveStart, curveStart));
+                        vectorImage.InsertingFigure = null;
+                        isDrawing = false;
+                        vectorImage.AddCurvePath(factory, curveStart, curvePoints, fillColor, strokeColor, strokeWidth);
+                        curveStart = PointF.Empty;
+                        curvePoints = null;
+                        Draw();
+                    } 
+                    else
+                    {
+                        curvePoints.RemoveAt(curvePoints.Count - 1);
+                        curvePoints.Add(new CurveCoords(curvePoints[curvePoints.Count - 1].P, new PointF(x, y), new PointF(x, y)));
+                        curvePoints.Add(new CurveCoords(new PointF(x, y), new PointF(x, y), new PointF(x, y)));
+                        vectorImage.InsertingFigure = factory.CreateCurvePath(curveStart, curvePoints, Color.Transparent, strokeColor, strokeWidth);
+                        Draw();
+                    }
+                }
+            }
         }
 
         private void toolStripButton2_Click(object sender, EventArgs e)
@@ -144,6 +193,26 @@ namespace VectorEditor
         private void toolStripButton4_Click(object sender, EventArgs e)
         {
             currentInstrument = Instrument.Polygon;
+        }
+
+        private void toolStripButton5_Click(object sender, EventArgs e)
+        {
+            currentInstrument = Instrument.CurvePath;
+        }
+
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (isDrawing && currentInstrument == Instrument.CurvePath && e.KeyData == Keys.Enter)
+            {
+                curvePoints.RemoveAt(curvePoints.Count - 1);
+                curvePoints.Add(new CurveCoords(curvePoints[curvePoints.Count - 1].P, new PointF(x, y), new PointF(x, y)));
+                vectorImage.InsertingFigure = null;
+                isDrawing = false;
+                vectorImage.AddCurvePath(factory, curveStart, curvePoints, fillColor, strokeColor, strokeWidth);
+                curveStart = PointF.Empty;
+                curvePoints = null;
+                Draw();
+            }
         }
     }
 }

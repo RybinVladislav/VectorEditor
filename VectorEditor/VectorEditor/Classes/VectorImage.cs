@@ -54,13 +54,13 @@ namespace VectorEditor
                 figures.Add(element.Clone());
         }
 
-        public void Draw(Graphics g)
+        public void Draw(Graphics g, float scale)
         {
             foreach (IFigure element in Figures)
-                element.Draw(g);
+                element.Draw(g, scale);
 
             if (InsertingFigure != null)
-                InsertingFigure.Draw(g);
+                InsertingFigure.Draw(g, scale);
         }
     }
 }

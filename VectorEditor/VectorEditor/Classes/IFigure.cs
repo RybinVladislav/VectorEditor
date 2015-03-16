@@ -9,7 +9,7 @@ namespace VectorEditor
 {
     public interface IDrawable
     {
-        void Draw(Graphics g);
+        void Draw(Graphics g, float scale);
     }
     
     public interface IFigure : IDrawable
