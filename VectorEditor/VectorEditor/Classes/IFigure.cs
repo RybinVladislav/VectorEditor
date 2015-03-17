@@ -60,10 +60,4 @@ namespace VectorEditor
 
         IList<CurveCoords> Curves { get; set; }
     }
-
-    public interface IPolygon : IFigure 
-    {
-        IList<PointF> Points { get; set; }
-    }
-
 }

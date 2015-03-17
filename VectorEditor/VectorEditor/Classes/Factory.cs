@@ -11,7 +11,6 @@ namespace VectorEditor
 		IEllipse CreateEllipse(PointF center, float radiusX, float radiusY, Color fillColor, Color strokeColor, float strokeWidth);
 		IRectangle CreateRectangle(float top, float left, float width, float height, Color fillColor, Color strokeColor, float strokeWidth);
 		ICurvePath CreateCurvePath(PointF start, IList<CurveCoords> curves, Color fillColor, Color strokeColor, float strokeWidth);
-		IPolygon CreatePolygon(IList<PointF> points, Color fillColor, Color strokeColor, float strokeWidth);
     }
 
 	public class Factory : IFigureFactory
@@ -31,16 +30,5 @@ namespace VectorEditor
             return new CurvePath(start, curves, fillColor, strokeColor, strokeWidth);
         }
 
-        public IPolygon CreatePolygon(IList<PointF> points, Color fillColor, Color strokeColor, float strokeWidth)
-        {
-            try
-			{
-            	return new Polygon(points, fillColor, strokeColor, strokeWidth);
-			}
-			catch (ArgumentException)
-			{
-                return null;
-			}
-        }
     }
 }

@@ -58,7 +58,6 @@ namespace VectorEditor
             None,
             Ellipse,
             Rectangle,
-            Polygon,
             CurvePath
         }
 
@@ -188,11 +187,6 @@ namespace VectorEditor
         private void toolStripButton3_Click(object sender, EventArgs e)
         {
             currentInstrument = Instrument.Rectangle;
-        }
-
-        private void toolStripButton4_Click(object sender, EventArgs e)
-        {
-            currentInstrument = Instrument.Polygon;
         }
 
         private void toolStripButton5_Click(object sender, EventArgs e)

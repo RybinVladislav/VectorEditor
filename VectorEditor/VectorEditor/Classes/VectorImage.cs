@@ -41,12 +41,12 @@ namespace VectorEditor
             figures.Add(factory.CreateCurvePath(start, curves, fillColor, strokeColor, strokeWidth));
         }
 
-        public void AddPolygon(IFigureFactory factory, IList<PointF> points, Color fillColor, Color strokeColor, float strokeWidth)
+        /* public void AddPolygon(IFigureFactory factory, IList<PointF> points, Color fillColor, Color strokeColor, float strokeWidth)
         {
             IFigure polygon = factory.CreatePolygon(points, fillColor, strokeColor, strokeWidth);
             if (polygon != null)
                 figures.Add(polygon);
-        }
+        } */
 
         public void Copy(IEnumerable<IFigure> selectedElements)
         {

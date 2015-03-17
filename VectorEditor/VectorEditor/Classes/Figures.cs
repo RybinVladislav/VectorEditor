@@ -169,7 +169,7 @@ namespace VectorEditor
         }
     }
 
-    public class Polygon : Component, IPolygon
+    /* public class Polygon : Component, IPolygon
     {
         public IList<PointF> Points { get; set; }
 
@@ -204,7 +204,7 @@ namespace VectorEditor
             g.FillPolygon(new SolidBrush(FillColor), Points.ToArray());
             g.DrawPolygon(new Pen(StrokeColor, StrokeWidth), Points.ToArray());
         }
-    }
+    } */
 
 	public class CompositeFigure : IComposite
 	{
