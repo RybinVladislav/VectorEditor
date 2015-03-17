@@ -208,5 +208,23 @@ namespace VectorEditor
                 Draw();
             }
         }
+
+        private void toolStripButton4_Click(object sender, EventArgs e)
+        {
+            colorDialog1.Color = strokeColor;
+            if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                strokeColor = colorDialog1.Color;
+            }
+        }
+
+        private void toolStripButton6_Click(object sender, EventArgs e)
+        {
+            colorDialog1.Color = fillColor;
+            if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                fillColor = colorDialog1.Color;
+            }
+        }
     }
 }
