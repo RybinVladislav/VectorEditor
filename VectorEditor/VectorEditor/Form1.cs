@@ -226,6 +226,8 @@ namespace VectorEditor
             if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 strokeColor = colorDialog1.Color;
+				toolStripButton4.BackColor = colorDialog1.Color;
+				toolStripButton4.ForeColor = Color.FromArgb(Color.Black.ToArgb() - colorDialog1.Color.ToArgb());
             }
         }
 
@@ -235,6 +237,8 @@ namespace VectorEditor
             if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 fillColor = colorDialog1.Color;
+				toolStripButton6.BackColor = colorDialog1.Color;
+				toolStripButton6.ForeColor = Color.FromArgb(Color.Black.ToArgb() - colorDialog1.Color.ToArgb());
             }
         }
     }
