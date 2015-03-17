@@ -46,6 +46,11 @@ namespace VectorEditor
             g.FillEllipse(new SolidBrush(FillColor), scale * (Center.X - RadiusX), scale * (Center.Y - RadiusY), scale * 2 * RadiusX, scale * 2 * RadiusY);
             g.DrawEllipse(new Pen(StrokeColor, StrokeWidth), scale * (Center.X - RadiusX), scale * (Center.Y - RadiusY), scale * 2 * RadiusX, scale * 2 * RadiusY);
         }
+
+        public bool isHover(int x, int y)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class Rectangle : Component, IRectangle
@@ -88,6 +93,12 @@ namespace VectorEditor
         {
             g.FillRectangle(new SolidBrush(FillColor), scale * Left, scale * Top, scale * Width, scale * Height);
             g.DrawRectangle(new Pen(StrokeColor, StrokeWidth), scale * Left, scale * Top, scale * Width, scale * Height);
+        }
+
+
+        public bool isHover(int x, int y)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -166,6 +177,12 @@ namespace VectorEditor
 
             g.FillPath(new SolidBrush(FillColor), path);
             g.DrawPath(new Pen(StrokeColor, StrokeWidth), path);
+        }
+
+
+        public bool isHover(int x, int y)
+        {
+            throw new NotImplementedException();
         }
     }
 

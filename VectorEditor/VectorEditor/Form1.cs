@@ -20,7 +20,7 @@ namespace VectorEditor
         public VectorImage vectorImage = new VectorImage();
         private Factory factory = new Factory();
 
-        public Color fillColor = Color.Red;
+        public Color fillColor = Color.Transparent;
         public Color strokeColor = Color.Black;
         public float strokeWidth = 2F;
 
@@ -205,6 +205,17 @@ namespace VectorEditor
                 vectorImage.AddCurvePath(factory, curveStart, curvePoints, fillColor, strokeColor, strokeWidth);
                 curveStart = PointF.Empty;
                 curvePoints = null;
+                Draw();
+            }
+            if (isDrawing && e.KeyData == Keys.Escape)
+            {
+                vectorImage.InsertingFigure = null;
+                isDrawing = false;
+                if (currentInstrument == Instrument.CurvePath)
+                {
+                    curveStart = PointF.Empty;
+                    curvePoints = null;
+                }
                 Draw();
             }
         }

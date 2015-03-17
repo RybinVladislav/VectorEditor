@@ -20,6 +20,8 @@ namespace VectorEditor
         float StrokeWidth { get; set; }
 
         IFigure Clone();
+
+        bool isHover(int x, int y);
     }
 
     public interface IEllipse : IFigure 
