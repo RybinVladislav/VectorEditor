@@ -47,11 +47,10 @@ namespace VectorEditor
             }
         }
 
+
         public IFigure InsertingFigure { get; set; }
 
         public int SelectedFigure { get; set; }
-
-        
 
         public int Width { get; set; }
         public int Height { get; set; }
@@ -133,15 +132,16 @@ namespace VectorEditor
                 figures[i].Draw(g, 1);
 
                 g.Dispose();
-                //bmp.Dispose();
 
                 for (int x0 = Math.Max((int)Math.Round(x) - r, 0); x0 <= x + r; x0++)
                     for (int y0 = Math.Max((int)Math.Round(y) - r, 0); y0 <= y + r; y0++)
                         if (bmp.GetPixel(x0, y0).ToArgb() != Color.White.ToArgb())
                         {
                             SelectedFigure = i;
+                            bmp.Dispose();
                             return; 
                         }
+                bmp.Dispose();
             }
         }
     }

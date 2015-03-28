@@ -114,6 +114,9 @@ namespace VectorEditor
 
         Instrument currentInstrument = Instrument.None;
         bool isDrawing = false;
+
+        bool isMoving = false;
+
         float x0, y0, x, y;
         IList<CurveCoords> curvePoints = new List<CurveCoords>();
         PointF curveStart = PointF.Empty;
@@ -143,14 +146,19 @@ namespace VectorEditor
                     Draw();
                     break;
             }
+
+            if (selectedFigure != null && selectedFigure is IEllipse)
+            {
+                isMoving = true;
+            }
         }
 
         private void panel1_MouseMove(object sender, MouseEventArgs e)
         {
+            PointF p = GetImageCoords();
+            x = e.X - p.X; y = e.Y - p.Y;
             if (isDrawing)
             {
-                PointF p = GetImageCoords();
-                x = e.X - p.X; y = e.Y - p.Y;
                 switch (currentInstrument)
                 {
                     case Instrument.Ellipse:
@@ -171,12 +179,52 @@ namespace VectorEditor
                         break;
                 }
             }
+
+            if (isMoving)
+            {
+                if (selectedFigure != null && selectedFigure is IEllipse)
+                {
+                    if ((x0 - p.X >= ((IEllipse)selectedFigure).Center.X - ((IEllipse)selectedFigure).RadiusX - 4) &&
+                        (x0 - p.X <= ((IEllipse)selectedFigure).Center.X - ((IEllipse)selectedFigure).RadiusX + 4) &&
+                        (y0 - p.Y >= ((IEllipse)selectedFigure).Center.Y - 4) &&
+                        (y0 - p.Y <= ((IEllipse)selectedFigure).Center.Y + 4))
+                    {
+                        ((IEllipse)selectedFigure).RadiusX += x0 - e.X;
+                        x0 = e.X;
+                        Draw();
+                    }
+                    else
+                        if ((x0 - p.X >= ((IEllipse)selectedFigure).Center.X - 4) &&
+                        (x0 - p.X <= ((IEllipse)selectedFigure).Center.X + 4) &&
+                        (y0 - p.Y >= ((IEllipse)selectedFigure).Center.Y - ((IEllipse)selectedFigure).RadiusY - 4) &&
+                        (y0 - p.Y <= ((IEllipse)selectedFigure).Center.Y - ((IEllipse)selectedFigure).RadiusY + 4))
+                        {
+                            ((IEllipse)selectedFigure).RadiusY += y0 - e.Y;
+                            y0 = e.Y;
+                            Draw();
+                        }
+                        else
+                        {
+                            ((IEllipse)selectedFigure).Center = new PointF(((IEllipse)selectedFigure).Center.X - x0 + e.X,
+                                ((IEllipse)selectedFigure).Center.Y - y0 + e.Y);
+                            x0 = e.X;
+                            y0 = e.Y;
+                            Draw();
+                        }
+                }
+            }
         }
 
         private void panel1_MouseUp(object sender, MouseEventArgs e)
         {
             PointF p = GetImageCoords();
             x = e.X - p.X; y = e.Y - p.Y;
+
+            if (isMoving)
+            {
+                isMoving = false;
+            }
+
             if (isDrawing)
             {
                 switch (currentInstrument)
