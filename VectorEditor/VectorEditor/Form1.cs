@@ -15,9 +15,30 @@ namespace VectorEditor
         public Form1()
         {
             InitializeComponent();
+            vectorImage = new VectorImage(640, 480);
+            vectorImage.OnImageChangeHandler += vectorImage_OnImageChangeHandler;
         }
 
-        public VectorImage vectorImage = new VectorImage();
+        void vectorImage_OnImageChangeHandler(object sender, ImageChangeEventArgs e)
+        {
+            treeView1.Nodes.Clear();
+            imageList1.Images.Clear();
+            int a = Math.Max(vectorImage.Width, vectorImage.Height);
+            for (int i = 0; i < e.Figures.Count; i++)
+            {
+                Bitmap bmp = new Bitmap(a / 10, a / 10);
+                Graphics g = Graphics.FromImage(bmp);
+                e.Figures[i].Draw(g, (float)(0.1));
+                g.Dispose();
+                imageList1.Images.Add(bmp);
+                bmp.Dispose();
+                g.Dispose();
+
+                treeView1.Nodes.Add(string.Format("Figure{0}", i), string.Format("Figure{0} [{1}]", i, e.Figures[i].GetType().Name), i, i);
+            }
+        }
+
+        public VectorImage vectorImage;
         private Factory factory = new Factory();
 
         public Color fillColor = Color.Transparent;
@@ -25,6 +46,16 @@ namespace VectorEditor
         public float strokeWidth = 2F;
 
         float scale = 1;
+
+        PointF GetImageCoords()
+        {
+            float x0 = (panel1.Width - vectorImage.Width * scale) / 2,
+                  y0 = (panel1.Height - vectorImage.Height * scale) / 2;
+            return new PointF(x0, y0);
+        }
+
+        // начало координат
+        public int X0, Y0;
 
         public bool isNear(PointF p1, PointF p2, float r)
         {
@@ -34,15 +65,27 @@ namespace VectorEditor
         public void Draw()
         {
             Graphics s = panel1.CreateGraphics();
-            Bitmap bmp = new Bitmap(panel1.Width, panel1.Height);
+            
+            Bitmap bmp1 = new Bitmap(panel1.Width, panel1.Height);
+            Graphics g1 = Graphics.FromImage(bmp1);
+
+            Bitmap bmp = new Bitmap(vectorImage.Width, vectorImage.Height);
             Graphics g = Graphics.FromImage(bmp);
+
+            // начало координат для изображения
+            PointF p = GetImageCoords();
 
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
 
             g.Clear(Color.White);
             vectorImage.Draw(g, scale);
 
-            s.DrawImage(bmp, 0, 0, panel1.Width, panel1.Height);
+            g1.Clear(Color.Gray);
+            g1.DrawImage(bmp, X0 + p.X, Y0 + p.Y, vectorImage.Width * scale, vectorImage.Height * scale);
+            
+            s.DrawImage(bmp1, 0, 0, panel1.Width, panel1.Height);
+            g1.Dispose();
+            bmp1.Dispose();
             g.Dispose();
             bmp.Dispose();
             s.Dispose();
@@ -52,6 +95,8 @@ namespace VectorEditor
         {
             Draw();
         }
+
+        // Observer
 
         enum Instrument
         {
@@ -77,16 +122,18 @@ namespace VectorEditor
             x0 = e.X;
             y0 = e.Y;
 
+            PointF p = GetImageCoords();
+
             switch (currentInstrument)
             {
                 case Instrument.Ellipse :
                     isDrawing = true;
-                    vectorImage.InsertingFigure = factory.CreateEllipse(new PointF(e.X, e.Y), 0, 0, fillColor, strokeColor, strokeWidth);
+                    vectorImage.InsertingFigure = factory.CreateEllipse(new PointF(e.X - p.X, e.Y - p.Y), 0, 0, fillColor, strokeColor, strokeWidth);
                     Draw();
                     break;
                 case Instrument.Rectangle:
                     isDrawing = true;
-                    vectorImage.InsertingFigure = factory.CreateRectangle(y0, x0, 0, 0, fillColor, strokeColor, strokeWidth);
+                    vectorImage.InsertingFigure = factory.CreateRectangle(y0 - p.X, x0 - p.Y, 0, 0, fillColor, strokeColor, strokeWidth);
                     Draw();
                     break;
             }
@@ -96,17 +143,18 @@ namespace VectorEditor
         {
             if (isDrawing)
             {
-                x = e.X; y = e.Y;
+                PointF p = GetImageCoords();
+                x = e.X - p.X; y = e.Y - p.Y;
                 switch (currentInstrument)
                 {
                     case Instrument.Ellipse:
-                        vectorImage.InsertingFigure = factory.CreateEllipse(new PointF((x0 + x) / 2, (y0 + y) / 2), Math.Abs(x0 - x) / 2, Math.Abs(y0 - y) / 2,
-                            fillColor, strokeColor, strokeWidth);
+                        vectorImage.InsertingFigure = factory.CreateEllipse(new PointF((x0 - p.X + x) / 2, (y0 - p.Y + y) / 2), 
+                            Math.Abs(x0 - p.X - x) / 2, Math.Abs(y0 - p.Y - y) / 2, fillColor, strokeColor, strokeWidth);
                         Draw();
                         break;
                     case Instrument.Rectangle:
-                        vectorImage.InsertingFigure = factory.CreateRectangle(Math.Min(y0, y), Math.Min(x0, x), Math.Abs(x - x0), Math.Abs(y - y0), 
-                            fillColor, strokeColor, strokeWidth);
+                        vectorImage.InsertingFigure = factory.CreateRectangle(Math.Min(y0 - p.Y, y), Math.Min(x0 - p.X, x), 
+                            Math.Abs(x - x0 + p.X), Math.Abs(y - y0 + p.Y), fillColor, strokeColor, strokeWidth);
                         Draw();
                         break;
                     case Instrument.CurvePath:
@@ -121,7 +169,8 @@ namespace VectorEditor
 
         private void panel1_MouseUp(object sender, MouseEventArgs e)
         {
-            x = e.X; y = e.Y;
+            PointF p = GetImageCoords();
+            x = e.X - p.X; y = e.Y - p.Y;
             if (isDrawing)
             {
                 switch (currentInstrument)
@@ -129,15 +178,15 @@ namespace VectorEditor
                     case Instrument.Ellipse:
                         vectorImage.InsertingFigure = null;
                         isDrawing = false;
-                        vectorImage.AddEllipse(factory, new PointF((x0 + x) / 2, (y0 + y) / 2), Math.Abs(x0 - x) / 2, Math.Abs(y0 - y) / 2,
-                            fillColor, strokeColor, strokeWidth);
+                        vectorImage.AddEllipse(factory, new PointF((x0 - p.X + x) / 2, (y0 - p.Y + y) / 2),
+                            Math.Abs(x0 - p.X - x) / 2, Math.Abs(y0 - p.Y - y) / 2, fillColor, strokeColor, strokeWidth);
                         Draw();
                         break;
                     case Instrument.Rectangle:
                         vectorImage.InsertingFigure = null;
                         isDrawing = false;
-                        vectorImage.AddRectangle(factory, Math.Min(y0, y), Math.Min(x0, x), Math.Abs(x - x0), Math.Abs(y - y0),
-                            fillColor, strokeColor, strokeWidth);
+                        vectorImage.AddRectangle(factory, Math.Min(y0 - p.Y, y), Math.Min(x0 - p.X, x),
+                            Math.Abs(x - x0 + p.X), Math.Abs(y - y0 + p.Y), fillColor, strokeColor, strokeWidth);
                         Draw();
                         break;
                 }
@@ -240,6 +289,16 @@ namespace VectorEditor
 				toolStripButton6.BackColor = colorDialog1.Color;
 				toolStripButton6.ForeColor = Color.FromArgb(Color.Black.ToArgb() - colorDialog1.Color.ToArgb());
             }
+        }
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            vectorImage.SelectedFigure = e.Node.Index;
+        }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            Draw();
         }
     }
 }
