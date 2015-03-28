@@ -26,9 +26,10 @@ namespace VectorEditor
             int a = Math.Max(vectorImage.Width, vectorImage.Height);
             for (int i = 0; i < e.Figures.Count; i++)
             {
-                Bitmap bmp = new Bitmap(a / 10, a / 10);
+                Bitmap bmp = new Bitmap(64, 64);
                 Graphics g = Graphics.FromImage(bmp);
-                e.Figures[i].Draw(g, (float)(0.1));
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                e.Figures[i].Draw(g, (float)(64.0 / a));
                 g.Dispose();
                 imageList1.Images.Add(bmp);
                 bmp.Dispose();
@@ -44,6 +45,8 @@ namespace VectorEditor
         public Color fillColor = Color.Transparent;
         public Color strokeColor = Color.Black;
         public float strokeWidth = 2F;
+
+        public IFigure selectedFigure = null;
 
         float scale = 1;
 
@@ -79,6 +82,9 @@ namespace VectorEditor
 
             g.Clear(Color.White);
             vectorImage.Draw(g, scale);
+
+            if (selectedFigure != null)
+                selectedFigure.Draw(g, scale);
 
             g1.Clear(Color.Gray);
             g1.DrawImage(bmp, X0 + p.X, Y0 + p.Y, vectorImage.Width * scale, vectorImage.Height * scale);
@@ -205,7 +211,7 @@ namespace VectorEditor
                 }
                 else
                 {
-                    if (isNear(curveStart, new PointF(x, y), 10)) 
+                    if (isNear(curveStart, new PointF(x, y), 10))
                     {
                         curvePoints.RemoveAt(curvePoints.Count - 1);
                         curvePoints.Add(new CurveCoords(curvePoints[curvePoints.Count - 1].P, curveStart, curveStart));
@@ -215,7 +221,7 @@ namespace VectorEditor
                         curveStart = PointF.Empty;
                         curvePoints = null;
                         Draw();
-                    } 
+                    }
                     else
                     {
                         curvePoints.RemoveAt(curvePoints.Count - 1);
@@ -225,6 +231,21 @@ namespace VectorEditor
                         Draw();
                     }
                 }
+            }
+            else
+            if (currentInstrument == Instrument.None) 
+            {
+                vectorImage.SelectFigure(x, y, 5);
+                if (vectorImage.SelectedFigure != -1)
+                    selectedFigure = vectorImage.Figures[vectorImage.SelectedFigure];
+                else
+                    selectedFigure = null;
+
+                if (selectedFigure is IEllipse)
+                    selectedFigure = new EllipseDecorator(selectedFigure as IEllipse);
+
+                Draw();
+
             }
         }
 
@@ -293,7 +314,7 @@ namespace VectorEditor
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            vectorImage.SelectedFigure = e.Node.Index;
+            //vectorImage.SelectedFigure = e.Node.Index;
         }
 
         private void Form1_Resize(object sender, EventArgs e)

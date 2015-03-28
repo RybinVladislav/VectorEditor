@@ -60,6 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Decorator.cs" />
     <Compile Include="Classes\Factory.cs" />
     <Compile Include="Classes\Figures.cs" />
     <Compile Include="Classes\VectorImage.cs" />

@@ -51,6 +51,8 @@ namespace VectorEditor
 
         public int SelectedFigure { get; set; }
 
+        
+
         public int Width { get; set; }
         public int Height { get; set; }
 
@@ -59,6 +61,7 @@ namespace VectorEditor
         public VectorImage(int width, int height)
         {
             Figures = new List<IFigure>();
+            SelectedFigure = -1;
             Width = width;
             Height = height;
         }
@@ -115,6 +118,31 @@ namespace VectorEditor
             g.DrawLine(p, new PointF(0, Height - 1), new PointF(Width - 1, Height - 1));
             g.DrawLine(p, new PointF(0, 0), new PointF(0, Height - 1));
             g.DrawLine(p, new PointF(Width - 1, 0), new PointF(Width - 1, Height - 1));
+        }
+
+        public void SelectFigure(float x, float y, int r)
+        {
+            if (x > Width || x < 0 || y > Height || y < 0) return;
+            SelectedFigure = -1;
+            for (int i = figures.Count - 1; i >= 0; i--)
+            {
+                Bitmap bmp = new Bitmap(Width, Height);
+                Graphics g = Graphics.FromImage(bmp);
+
+                g.Clear(Color.White);
+                figures[i].Draw(g, 1);
+
+                g.Dispose();
+                //bmp.Dispose();
+
+                for (int x0 = Math.Max((int)Math.Round(x) - r, 0); x0 <= x + r; x0++)
+                    for (int y0 = Math.Max((int)Math.Round(y) - r, 0); y0 <= y + r; y0++)
+                        if (bmp.GetPixel(x0, y0).ToArgb() != Color.White.ToArgb())
+                        {
+                            SelectedFigure = i;
+                            return; 
+                        }
+            }
         }
     }
 }
