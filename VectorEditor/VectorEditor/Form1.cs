@@ -147,7 +147,7 @@ namespace VectorEditor
                     break;
             }
 
-            if (selectedFigure != null && selectedFigure is IEllipse)
+            if (selectedFigure != null)
             {
                 isMoving = true;
             }
@@ -182,6 +182,7 @@ namespace VectorEditor
 
             if (isMoving)
             {
+                // выделен эллипс
                 if (selectedFigure != null && selectedFigure is IEllipse)
                 {
                     if ((x0 - p.X >= ((IEllipse)selectedFigure).Center.X - ((IEllipse)selectedFigure).RadiusX - 4) &&
@@ -212,6 +213,72 @@ namespace VectorEditor
                             Draw();
                         }
                 }
+                else
+
+                    // выделен прямоугольник
+                    if (selectedFigure != null && selectedFigure is IRectangle)
+                    {
+                        if ((x0 - p.X >= ((IRectangle)selectedFigure).Left - 4) &&
+                            (x0 - p.X <= ((IRectangle)selectedFigure).Left + 4) &&
+                            (y0 - p.Y >= ((IRectangle)selectedFigure).Top - 4) &&
+                            (y0 - p.Y <= ((IRectangle)selectedFigure).Top + 4))
+                        {
+                            ((IRectangle)selectedFigure).Left += -x0 + e.X;
+                            ((IRectangle)selectedFigure).Top += -y0 + e.Y;
+                            ((IRectangle)selectedFigure).Width += x0 - e.X;
+                            ((IRectangle)selectedFigure).Height += y0 - e.Y;
+
+                            if (((IRectangle)selectedFigure).Width < 0)
+                            {
+                                ((IRectangle)selectedFigure).Left += ((IRectangle)selectedFigure).Width;
+                                ((IRectangle)selectedFigure).Width = -((IRectangle)selectedFigure).Width;
+                            }
+
+                            if (((IRectangle)selectedFigure).Height < 0)
+                            {
+                                ((IRectangle)selectedFigure).Top += ((IRectangle)selectedFigure).Height;
+                                ((IRectangle)selectedFigure).Height = -((IRectangle)selectedFigure).Height;
+                            }
+
+                            x0 = e.X;
+                            y0 = e.Y;
+                            Draw();
+                        }
+                        else
+                            if ((x0 - p.X >= ((IRectangle)selectedFigure).Left + ((IRectangle)selectedFigure).Width - 4) &&
+                            (x0 - p.X <= ((IRectangle)selectedFigure).Left + ((IRectangle)selectedFigure).Width + 4) &&
+                            (y0 - p.Y >= ((IRectangle)selectedFigure).Top + ((IRectangle)selectedFigure).Height - 4) &&
+                            (y0 - p.Y <= ((IRectangle)selectedFigure).Top + ((IRectangle)selectedFigure).Height + 4))
+                            {
+                                ((IRectangle)selectedFigure).Width += e.X - x0;
+                                ((IRectangle)selectedFigure).Height += e.Y - y0;
+
+                                if (((IRectangle)selectedFigure).Width < 0)
+                                {
+                                    ((IRectangle)selectedFigure).Left += ((IRectangle)selectedFigure).Width;
+                                    ((IRectangle)selectedFigure).Width = -((IRectangle)selectedFigure).Width;
+                                }
+
+                                if (((IRectangle)selectedFigure).Height < 0)
+                                {
+                                    ((IRectangle)selectedFigure).Top += ((IRectangle)selectedFigure).Height;
+                                    ((IRectangle)selectedFigure).Height = -((IRectangle)selectedFigure).Height;
+                                }
+
+                                x0 = e.X;
+                                y0 = e.Y;
+                                Draw();
+                            }
+                            else
+                            {
+                                ((IRectangle)selectedFigure).Left += -x0 + e.X;
+                                ((IRectangle)selectedFigure).Top += -y0 + e.Y;
+                                x0 = e.X;
+                                y0 = e.Y;
+                                Draw();
+                            }
+                    }
+               
             }
         }
 
@@ -285,12 +352,25 @@ namespace VectorEditor
             {
                 vectorImage.SelectFigure(x, y, 5);
                 if (vectorImage.SelectedFigure != -1)
+                {
                     selectedFigure = vectorImage.Figures[vectorImage.SelectedFigure];
+                    button1.BackColor = selectedFigure.StrokeColor;
+                    button2.BackColor = selectedFigure.FillColor;
+                    numericUpDown1.Value = (decimal)selectedFigure.StrokeWidth;
+                }
                 else
+                {
                     selectedFigure = null;
+                    button1.BackColor = strokeColor;
+                    button2.BackColor = fillColor;
+                    numericUpDown1.Value = (decimal)strokeWidth;
+                }
 
                 if (selectedFigure is IEllipse)
                     selectedFigure = new EllipseDecorator(selectedFigure as IEllipse);
+
+                if (selectedFigure is IRectangle)
+                    selectedFigure = new RectangleDecorator(selectedFigure as IRectangle);
 
                 Draw();
 
@@ -338,28 +418,6 @@ namespace VectorEditor
             }
         }
 
-        private void toolStripButton4_Click(object sender, EventArgs e)
-        {
-            colorDialog1.Color = strokeColor;
-            if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                strokeColor = colorDialog1.Color;
-				toolStripButton4.BackColor = colorDialog1.Color;
-				toolStripButton4.ForeColor = Color.FromArgb(Color.Black.ToArgb() - colorDialog1.Color.ToArgb());
-            }
-        }
-
-        private void toolStripButton6_Click(object sender, EventArgs e)
-        {
-            colorDialog1.Color = fillColor;
-            if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                fillColor = colorDialog1.Color;
-				toolStripButton6.BackColor = colorDialog1.Color;
-				toolStripButton6.ForeColor = Color.FromArgb(Color.Black.ToArgb() - colorDialog1.Color.ToArgb());
-            }
-        }
-
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             //vectorImage.SelectedFigure = e.Node.Index;
@@ -368,6 +426,49 @@ namespace VectorEditor
         private void Form1_Resize(object sender, EventArgs e)
         {
             Draw();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            colorDialog1.Color = button1.BackColor;
+            if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if (selectedFigure == null)
+                    strokeColor = colorDialog1.Color;
+                else
+                {
+                    selectedFigure.StrokeColor = colorDialog1.Color;
+                    Draw();
+                }
+                button1.BackColor = colorDialog1.Color;
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            colorDialog1.Color = button2.BackColor;
+            if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if (selectedFigure == null)
+                    fillColor = colorDialog1.Color;
+                else
+                {
+                    selectedFigure.FillColor = colorDialog1.Color;
+                    Draw();
+                }
+                button2.BackColor = colorDialog1.Color;
+            }
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            if (selectedFigure == null)
+                strokeWidth = (float)numericUpDown1.Value;
+            else
+            {
+                selectedFigure.StrokeWidth = (float)numericUpDown1.Value;
+                Draw();
+            }
         }
     }
 }
