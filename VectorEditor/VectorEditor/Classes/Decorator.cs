@@ -8,44 +8,6 @@ using System.Drawing.Drawing2D;
 
 namespace VectorEditor
 {    
-    public class FigureDecoratorBase : IFigure
-    {
-        protected readonly IFigure figure;
-
-        public FigureDecoratorBase(IFigure figure)
-        {
-            this.figure = figure;
-        }
-
-        public Color FillColor
-        {
-            get { return figure.FillColor; }
-            set { figure.FillColor = value; }
-        }
-
-        public Color StrokeColor
-        {
-            get { return figure.StrokeColor; }
-            set { figure.StrokeColor = value; }
-        }
-
-        public float StrokeWidth
-        {
-            get { return figure.StrokeWidth; }
-            set { figure.StrokeWidth = value; }
-        }
-
-        public IFigure Clone()
-        {
-            return figure.Clone();
-        }
-
-        public virtual void Draw(Graphics g, float scale)
-        {
-            figure.Draw(g, scale);
-        }
-    }
-
     public class EllipseDecoratorBase : IEllipse
     {
         protected readonly IEllipse figure;
@@ -195,6 +157,91 @@ namespace VectorEditor
             g.DrawRectangle(Pens.Black, Left - 4, Top - 4, 8, 8);
             g.FillRectangle(Brushes.White, Left + Width - 4, Top + Height - 4, 8, 8);
             g.DrawRectangle(Pens.Black, Left + Width - 4, Top + Height - 4, 8, 8);
+        }
+    }
+
+    public class CurvePathDecoratorBase : ICurvePath
+    {
+        protected readonly ICurvePath figure;
+
+        public CurvePathDecoratorBase(ICurvePath figure)
+        {
+            this.figure = figure;
+        }
+
+        public Color FillColor
+        {
+            get { return figure.FillColor; }
+            set { figure.FillColor = value; }
+        }
+
+        public Color StrokeColor
+        {
+            get { return figure.StrokeColor; }
+            set { figure.StrokeColor = value; }
+        }
+
+        public float StrokeWidth
+        {
+            get { return figure.StrokeWidth; }
+            set { figure.StrokeWidth = value; }
+        }
+
+        public IFigure Clone()
+        {
+            return figure.Clone();
+        }
+
+        public virtual void Draw(Graphics g, float scale)
+        {
+            figure.Draw(g, scale);
+        }
+
+        public PointF Start
+        {
+            get { return figure.Start; }
+            set { figure.Start = value; }
+        }
+
+        public IList<CurveCoords> Curves
+        {
+            get { return figure.Curves; }
+            set { figure.Curves = value; }
+        }
+    }
+
+    public class CurvePathDecorator : CurvePathDecoratorBase
+    {
+        public CurvePathDecorator(ICurvePath figure) : base(figure) { }
+
+        public override void Draw(Graphics g, float scale)
+        {
+            PointF prev = Start;
+
+            for (int i = 0; i < Curves.Count; i++)
+            {
+                g.DrawLine(Pens.Black, prev, Curves[i].P1);
+                g.DrawLine(Pens.Black, Curves[i].P2, Curves[i].P);
+                prev = Curves[i].P;
+            }
+
+            for (int i = 1; i < Curves.Count; i++)
+            {
+                g.FillRectangle(Brushes.White, Curves[i].P.X - 4, Curves[i].P.Y - 4, 8, 8);
+                g.DrawRectangle(Pens.Black, Curves[i].P.X - 4, Curves[i].P.Y - 4, 8, 8);
+
+                g.FillEllipse(Brushes.White, Curves[i].P1.X - 3, Curves[i].P1.Y - 3, 6, 6);
+                g.DrawEllipse(Pens.Black, Curves[i].P1.X - 3, Curves[i].P1.Y - 3, 6, 6);
+
+                g.FillEllipse(Brushes.White, Curves[i].P2.X - 3, Curves[i].P2.Y - 3, 6, 6);
+                g.DrawEllipse(Pens.Black, Curves[i].P2.X - 3, Curves[i].P2.Y - 3, 6, 6);
+            }
+
+            if (Curves[Curves.Count - 1].P != Start)
+            {
+                g.FillRectangle(Brushes.White, Start.X - 4, Start.Y - 4, 8, 8);
+                g.DrawRectangle(Pens.Black, Start.X - 4, Start.Y - 4, 8, 8);
+            }
         }
     }
 }
