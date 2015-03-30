@@ -15,8 +15,15 @@ namespace VectorEditor
         public Form1()
         {
             InitializeComponent();
-            vectorImage = new VectorImage(640, 480);
+
+            CreateNew(851, 480);
+
             vectorImage.OnImageChangeHandler += vectorImage_OnImageChangeHandler;
+        }
+
+        void CreateNew(int w, int h)
+        {
+            vectorImage = new VectorImage(w, h);
         }
 
         void vectorImage_OnImageChangeHandler(object sender, ImageChangeEventArgs e)
@@ -30,12 +37,13 @@ namespace VectorEditor
                 Graphics g = Graphics.FromImage(bmp);
                 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
                 e.Figures[i].Draw(g, (float)(64.0 / a));
-                g.Dispose();
+
                 imageList1.Images.Add(bmp);
+                treeView1.Nodes.Add(string.Format("Figure{0}", i), string.Format("Figure{0} [{1}]", i, e.Figures[i].GetType().Name), i, i);
+
                 bmp.Dispose();
                 g.Dispose();
 
-                treeView1.Nodes.Add(string.Format("Figure{0}", i), string.Format("Figure{0} [{1}]", i, e.Figures[i].GetType().Name), i, i);
             }
         }
 
@@ -58,7 +66,7 @@ namespace VectorEditor
         }
 
         // начало координат
-        public int X0, Y0;
+        public int X0 = 0, Y0 = 0;
 
         public bool isNear(PointF p1, PointF p2, float r)
         {
@@ -300,7 +308,7 @@ namespace VectorEditor
                                     ((ICurvePath)selectedFigure).Curves[((ICurvePath)selectedFigure).Curves.Count - 1] = new CurveCoords(
                                             ((ICurvePath)selectedFigure).Curves[((ICurvePath)selectedFigure).Curves.Count - 1].P1,
                                             ((ICurvePath)selectedFigure).Curves[((ICurvePath)selectedFigure).Curves.Count - 1].P2,
-                                            oldSt
+                                            ((ICurvePath)selectedFigure).Start
                                         );
 
                                 x0 = e.X;
