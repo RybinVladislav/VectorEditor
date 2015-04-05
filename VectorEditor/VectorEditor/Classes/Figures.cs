@@ -46,6 +46,14 @@ namespace VectorEditor
             g.FillEllipse(new SolidBrush(FillColor), scale * (Center.X - RadiusX), scale * (Center.Y - RadiusY), scale * 2 * RadiusX, scale * 2 * RadiusY);
             g.DrawEllipse(new Pen(StrokeColor, StrokeWidth), scale * (Center.X - RadiusX), scale * (Center.Y - RadiusY), scale * 2 * RadiusX, scale * 2 * RadiusY);
         }
+
+
+        public string Save()
+        {
+            System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+            return string.Format("<ellipse cx='{0}' cy='{1}' rx='{2}' ry='{3}' fill='{4}' stroke='{5}' stroke-width='{6}'></ellipse>",
+                Center.X, Center.Y, RadiusX, RadiusY, ColorTranslator.ToHtml(FillColor), ColorTranslator.ToHtml(StrokeColor), StrokeWidth);
+        }
     }
 
     public class Rectangle : Component, IRectangle
@@ -88,6 +96,14 @@ namespace VectorEditor
         {
             g.FillRectangle(new SolidBrush(FillColor), scale * Left, scale * Top, scale * Width, scale * Height);
             g.DrawRectangle(new Pen(StrokeColor, StrokeWidth), scale * Left, scale * Top, scale * Width, scale * Height);
+        }
+
+
+        public string Save()
+        {
+            System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+            return string.Format("<rect x='{0}' y='{1}' width='{2}' height='{3}' fill='{4}' stroke='{5}' stroke-width='{6}'></rect>",
+                Left, Top, Width, Height, ColorTranslator.ToHtml(FillColor), ColorTranslator.ToHtml(StrokeColor), StrokeWidth);
         }
     }
 
@@ -166,6 +182,19 @@ namespace VectorEditor
 
             g.FillPath(new SolidBrush(FillColor), path);
             g.DrawPath(new Pen(StrokeColor, StrokeWidth), path);
+        }
+
+
+        public string Save()
+        {
+            System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+            string s = string.Format("<path d='M{0} {1} ", Start.X, Start.Y);
+            foreach (CurveCoords curve in Curves)
+            {
+                s += string.Format("C{0} {1}, {2} {3}, {4} {5} ", curve.P1.X, curve.P1.Y, curve.P2.X, curve.P2.Y, curve.P.X, curve.P.Y);
+            }
+            s += string.Format("' fill='{0}' stroke='{1}' stroke-width='{2}'></path>", ColorTranslator.ToHtml(FillColor), ColorTranslator.ToHtml(StrokeColor), StrokeWidth);
+            return s;
         }
     }
 

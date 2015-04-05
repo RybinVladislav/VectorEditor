@@ -62,6 +62,11 @@ namespace VectorEditor
         {
             figure.Draw(g, scale);
         }
+
+        public string Save()
+        {
+            return figure.Save();
+        }
     }
 
     public class EllipseDecorator : EllipseDecoratorBase
@@ -141,6 +146,11 @@ namespace VectorEditor
             get { return figure.Height; }
             set { figure.Height = value; }
         }
+
+        public string Save()
+        {
+            return figure.Save();
+        }
     }
 
     public class RectangleDecorator : RectangleDecoratorBase
@@ -207,6 +217,11 @@ namespace VectorEditor
         {
             get { return figure.Curves; }
             set { figure.Curves = value; }
+        }
+
+        public string Save()
+        {
+            return figure.Save();
         }
     }
 

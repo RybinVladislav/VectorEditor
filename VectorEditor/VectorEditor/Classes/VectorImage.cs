@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.IO;
 
 namespace VectorEditor
 {
@@ -46,7 +47,6 @@ namespace VectorEditor
                 OnImageChange();
             }
         }
-
 
         public IFigure InsertingFigure { get; set; }
 
@@ -143,6 +143,48 @@ namespace VectorEditor
                         }
                 bmp.Dispose();
             }
+        }
+
+        public void LevelUp(IFigure f)
+        {
+            int k = figures.IndexOf(f);
+            if (k != -1 && k != figures.Count - 1)
+            {
+                figures.RemoveAt(k);
+                figures.Insert(k + 1, f);
+                if (SelectedFigure == k)
+                    SelectedFigure = k + 1;
+            }
+        }
+
+        public void LevelDown(IFigure f)
+        {
+            int k = figures.IndexOf(f);
+            if (k >= 1)
+            {
+                figures.RemoveAt(k);
+                figures.Insert(k - 1, f);
+                if (SelectedFigure == k)
+                    SelectedFigure = k - 1;
+            }
+        }
+
+        public void Save(string path)
+        {
+            FileStream f = new FileStream(path, FileMode.Create);
+            StreamWriter w = new StreamWriter(f);
+
+            w.WriteLine("<?xml version='1.0' encoding='UTF-8'?>\n<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>");
+            w.WriteLine("<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height = '{0}px'  width = '{1}px'>", Height, Width);
+
+            foreach (IFigure figure in figures)
+                w.WriteLine(figure.Save());
+
+            w.WriteLine("</svg>");
+
+            w.Flush();
+            w.Close();
+            f.Close();
         }
     }
 }

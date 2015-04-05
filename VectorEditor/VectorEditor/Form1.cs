@@ -18,7 +18,7 @@ namespace VectorEditor
 
             CreateNew(851, 480);
 
-            vectorImage.OnImageChangeHandler += vectorImage_OnImageChangeHandler;
+            //vectorImage.OnImageChangeHandler += vectorImage_OnImageChangeHandler;
         }
 
         void CreateNew(int w, int h)
@@ -26,6 +26,7 @@ namespace VectorEditor
             vectorImage = new VectorImage(w, h);
         }
 
+        /*
         void vectorImage_OnImageChangeHandler(object sender, ImageChangeEventArgs e)
         {
             treeView1.Nodes.Clear();
@@ -45,7 +46,7 @@ namespace VectorEditor
                 g.Dispose();
 
             }
-        }
+        } */
 
         public VectorImage vectorImage;
         private Factory factory = new Factory();
@@ -500,6 +501,7 @@ namespace VectorEditor
                     button1.BackColor = selectedFigure.StrokeColor;
                     button2.BackColor = selectedFigure.FillColor;
                     numericUpDown1.Value = (decimal)selectedFigure.StrokeWidth;
+                    panel5.Visible = true;
                 }
                 else
                 {
@@ -507,6 +509,7 @@ namespace VectorEditor
                     button1.BackColor = strokeColor;
                     button2.BackColor = fillColor;
                     numericUpDown1.Value = (decimal)strokeWidth;
+                    panel5.Visible = false;
                 }
 
                 if (selectedFigure is IEllipse)
@@ -629,6 +632,26 @@ namespace VectorEditor
             {
                 selectedFigure.StrokeWidth = (float)numericUpDown1.Value;
                 Draw();
+            }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            vectorImage.LevelUp(vectorImage.Figures[vectorImage.SelectedFigure]);
+            Draw();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            vectorImage.LevelDown(vectorImage.Figures[vectorImage.SelectedFigure]);
+            Draw();
+        }
+
+        private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                vectorImage.Save(saveFileDialog1.FileName);
             }
         }
     }
