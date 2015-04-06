@@ -7,3 +7,4 @@ C:\Users\fgnmgm\Documents\GitHub\VectorEditor\VectorEditor\VectorEditor\obj\Debu
 C:\Users\fgnmgm\Documents\GitHub\VectorEditor\VectorEditor\VectorEditor\obj\Debug\VectorEditor.csproj.GenerateResource.Cache
 C:\Users\fgnmgm\Documents\GitHub\VectorEditor\VectorEditor\VectorEditor\obj\Debug\VectorEditor.exe
 C:\Users\fgnmgm\Documents\GitHub\VectorEditor\VectorEditor\VectorEditor\obj\Debug\VectorEditor.pdb
+C:\Users\fgnmgm\Documents\GitHub\VectorEditor\VectorEditor\VectorEditor\obj\Debug\VectorEditor.Form2.resources

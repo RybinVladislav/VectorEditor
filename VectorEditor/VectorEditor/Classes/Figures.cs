@@ -98,7 +98,6 @@ namespace VectorEditor
             g.DrawRectangle(new Pen(StrokeColor, StrokeWidth), scale * Left, scale * Top, scale * Width, scale * Height);
         }
 
-
         public string Save()
         {
             System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
