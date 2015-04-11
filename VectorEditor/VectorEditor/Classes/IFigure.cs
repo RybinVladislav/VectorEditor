@@ -22,6 +22,8 @@ namespace VectorEditor
         IFigure Clone();
 
         string Save();
+
+        PointF MouseMove(Point e, PointF p, PointF p0);
     }
 
     public interface IEllipse : IFigure 

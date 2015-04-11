@@ -15,18 +15,18 @@ namespace VectorEditor
         public Form2()
         {
             InitializeComponent();
-            Width = 0;
-            Height = 0;
+            ImageWidth = 0;
+            ImageHeight = 0;
         }
 
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public int ImageWidth { get; set; }
+        public int ImageHeight { get; set; }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             try
             {
-                Width = Convert.ToInt32(textBox1.Text);
+                ImageWidth = Convert.ToInt32(textBox1.Text);
             }
             catch (Exception) { }
         }
@@ -35,7 +35,7 @@ namespace VectorEditor
         {
             try
             {
-                Height = Convert.ToInt32(textBox2.Text);
+                ImageHeight = Convert.ToInt32(textBox2.Text);
             }
             catch (Exception) { }
         }

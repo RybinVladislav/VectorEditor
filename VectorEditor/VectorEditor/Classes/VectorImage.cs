@@ -130,6 +130,7 @@ namespace VectorEditor
                 Graphics g = Graphics.FromImage(bmp);
 
                 g.Clear(Color.White);
+
                 figures[i].Draw(g, 1);
 
                 g.Dispose();
@@ -144,6 +145,36 @@ namespace VectorEditor
                         }
                 bmp.Dispose();
             }
+        }
+
+        public bool CurvePathCheck(float x, float y, int r)
+        {
+            if (x > Width || x < 0 || y > Height || y < 0) return false;
+            for (int i = figures.Count - 1; i >= 0; i--)
+            {
+                if (figures[i] is ICurvePath)
+                {
+                    Bitmap bmp = new Bitmap(Width, Height);
+                    Graphics g = Graphics.FromImage(bmp);
+
+                    CurvePathDecorator dec = new CurvePathDecorator(figures[i] as ICurvePath);
+                    g.Clear(Color.White);
+                    figures[i].Draw(g, 1);
+                    dec.Draw(g, 1);
+
+                    g.Dispose();
+
+                    for (int x0 = Math.Max((int)Math.Round(x) - r, 0); x0 <= x + r; x0++)
+                        for (int y0 = Math.Max((int)Math.Round(y) - r, 0); y0 <= y + r; y0++)
+                            if (bmp.GetPixel(x0, y0).ToArgb() != Color.White.ToArgb())
+                            {
+                                bmp.Dispose();
+                                return true;
+                            }
+                    bmp.Dispose();
+                }
+            }
+            return false;
         }
 
         public void LevelUp(IFigure f)

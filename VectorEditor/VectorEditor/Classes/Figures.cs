@@ -54,6 +54,28 @@ namespace VectorEditor
             return string.Format("<ellipse cx='{0}' cy='{1}' rx='{2}' ry='{3}' fill='{4}' stroke='{5}' stroke-width='{6}'></ellipse>",
                 Center.X, Center.Y, RadiusX, RadiusY, ColorTranslator.ToHtml(FillColor), ColorTranslator.ToHtml(StrokeColor), StrokeWidth);
         }
+
+        public PointF MouseMove(Point e, PointF p, PointF p0)
+        {
+            if ((p0.X - p.X >= Center.X - RadiusX - 4) && (p0.X - p.X <= Center.X - RadiusX + 4) &&
+                (p0.Y - p.Y >= Center.Y - 4) && (p0.Y - p.Y <= Center.Y + 4))
+            {
+                RadiusX += p0.X - e.X;
+                return new PointF(e.X, p0.Y);
+            }
+            else
+                if ((p0.X - p.X >= Center.X - 4) && (p0.X - p.X <= Center.X + 4) &&
+                (p0.Y - p.Y >= Center.Y - RadiusY - 4) && (p0.Y - p.Y <= Center.Y - RadiusY + 4))
+                {
+                    RadiusY += p0.Y - e.Y;
+                    return new PointF(p0.X, e.Y);
+                }
+                else
+                {
+                    Center = new PointF(Center.X - p0.X + e.X, Center.Y - p0.Y + e.Y);
+                    return new PointF(e.X, e.Y);
+                }
+        }
     }
 
     public class Rectangle : Component, IRectangle
@@ -103,6 +125,62 @@ namespace VectorEditor
             System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
             return string.Format("<rect x='{0}' y='{1}' width='{2}' height='{3}' fill='{4}' stroke='{5}' stroke-width='{6}'></rect>",
                 Left, Top, Width, Height, ColorTranslator.ToHtml(FillColor), ColorTranslator.ToHtml(StrokeColor), StrokeWidth);
+        }
+
+
+        public PointF MouseMove(Point e, PointF p, PointF p0)
+        {
+            if ((p0.X - p.X >= Left - 4) && (p0.X - p.X <= Left + 4) && (p0.Y - p.Y >= Top - 4) && (p0.Y - p.Y <= Top + 4))
+            {
+                Left += -p0.X + e.X;
+                Top += -p0.Y + e.Y;
+                Width += p0.X - e.X;
+                Height += p0.Y - e.Y;
+
+                if (Width < 0)
+                {
+                    Left += Width;
+                    Width = -Width;
+                }
+
+                if (Height < 0)
+                {
+                    Top += Height;
+                    Height = -Height;
+                }
+
+                return new PointF(e.X, e.Y);
+            }
+            else
+                if ((p0.X - p.X >= Left + Width - 4) &&
+                (p0.X - p.X <= Left + Width + 4) &&
+                (p0.Y - p.Y >= Top + Height - 4) &&
+                (p0.Y - p.Y <= Top + Height + 4))
+                {
+                    Width += e.X - p0.X;
+                    Height += e.Y - p0.Y;
+
+                    if (Width < 0)
+                    {
+                        Left += Width;
+                        Width = -Width;
+                    }
+
+                    if (Height < 0)
+                    {
+                        Top += Height;
+                        Height = -Height;
+                    }
+
+                    return new PointF(e.X, e.Y);
+                }
+                else
+                {
+                    Left += -p0.X + e.X;
+                    Top += -p0.Y + e.Y;
+
+                    return new PointF(e.X, e.Y);
+                }
         }
     }
 
@@ -194,6 +272,76 @@ namespace VectorEditor
             }
             s += string.Format("' fill='{0}' stroke='{1}' stroke-width='{2}'></path>", ColorTranslator.ToHtml(FillColor), ColorTranslator.ToHtml(StrokeColor), StrokeWidth);
             return s;
+        }
+
+
+        public PointF MouseMove(Point e, PointF p, PointF p0)
+        {
+            // проверка на перемещение начала
+            if ((p0.X - p.X >= Start.X - 4) && (p0.X - p.X <= Start.X + 4) && (p0.Y - p.Y >= Start.Y - 4) && (p0.Y - p.Y <= Start.Y + 4))
+            {
+                PointF oldSt = Start;
+
+                Start = new PointF(Start.X - p0.X + e.X, Start.Y - p0.Y + e.Y);
+
+                Curves[0] = new CurveCoords(Start, Start, Start);
+
+                if (oldSt == Curves[Curves.Count - 1].P)
+                    Curves[Curves.Count - 1] = new CurveCoords(Curves[Curves.Count - 1].P1, Curves[Curves.Count - 1].P2, Start);
+                
+                return new PointF(e.X, e.Y);
+            }
+
+            // проверка на перемещение узлов
+            for (int i = 1; i < Curves.Count; i++)
+            {
+                if ((p0.X - p.X >= Curves[i].P.X - 4) &&
+                    (p0.X - p.X <= Curves[i].P.X + 4) &&
+                    (p0.Y - p.Y >= Curves[i].P.Y - 4) &&
+                    (p0.Y - p.Y <= Curves[i].P.Y + 4))
+                {
+                    Curves[i] = new CurveCoords(Curves[i].P1, Curves[i].P2, new PointF(Curves[i].P.X - p0.X + e.X, Curves[i].P.Y - p0.Y + e.Y));
+
+                    return new PointF(e.X, e.Y);
+                }
+            }
+
+            // проверка на перемещение опорных точек
+            for (int i = 1; i < Curves.Count; i++)
+            {
+                if ((p0.X - p.X >= Curves[i].P1.X - 4) && (p0.X - p.X <= Curves[i].P1.X + 4) &&
+                    (p0.Y - p.Y >= Curves[i].P1.Y - 4) && (p0.Y - p.Y <= Curves[i].P1.Y + 4))
+                {
+
+                    Curves[i] = new CurveCoords(new PointF(Curves[i].P1.X - p0.X + e.X, Curves[i].P1.Y - p0.Y + e.Y), Curves[i].P2, Curves[i].P);
+
+                    return new PointF(e.X, e.Y);
+     
+                    //isMovingCurve = true;
+                }
+
+                if ((p0.X - p.X >= Curves[i].P2.X - 4) && (p0.X - p.X <= Curves[i].P2.X + 4) &&
+                    (p0.Y - p.Y >= Curves[i].P2.Y - 4) && (p0.Y - p.Y <= Curves[i].P2.Y + 4))
+                {
+
+                    Curves[i] = new CurveCoords(Curves[i].P1, new PointF(Curves[i].P2.X - p0.X + e.X, Curves[i].P2.Y - p0.Y + e.Y), Curves[i].P);
+
+                    return new PointF(e.X, e.Y);
+                    
+                    //isMovingCurve = true;
+                }
+            }
+            
+            Start = new PointF(Start.X + e.X - p0.X, Start.Y + e.Y - p0.Y);
+
+            for (int i = 0; i < Curves.Count; i++)
+                Curves[i] = new CurveCoords(
+                            new PointF(Curves[i].P1.X - p0.X + e.X, Curves[i].P1.Y - p0.Y + e.Y),
+                            new PointF(Curves[i].P2.X - p0.X + e.X, Curves[i].P2.Y - p0.Y + e.Y),
+                            new PointF(Curves[i].P.X - p0.X + e.X, Curves[i].P.Y - p0.Y + e.Y)
+                        );
+
+            return new PointF(e.X, e.Y);           
         }
     }
 

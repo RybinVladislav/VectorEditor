@@ -130,7 +130,7 @@ namespace VectorEditor
         Instrument currentInstrument = Instrument.None;
         bool isDrawing = false;
 
-        bool isMoving = false, isMovingCurve = false;
+        bool isMoving = false;
 
         float x0, y0, x, y;
         IList<CurveCoords> curvePoints = new List<CurveCoords>();
@@ -160,6 +160,50 @@ namespace VectorEditor
                         break;
                 }
 
+                // Выделение
+
+                if (currentInstrument == Instrument.None && !isMoving)
+                {
+                    if (selectedFigure is ICurvePath)
+                    {
+                        if (vectorImage.CurvePathCheck(x, y, 5))
+                        {
+                            isMoving = true;
+                            return;
+                        }
+                    }
+
+                    vectorImage.SelectFigure(x, y, 5);
+                    if (vectorImage.SelectedFigure != -1)
+                    {
+                        selectedFigure = vectorImage.Figures[vectorImage.SelectedFigure];
+                        button1.BackColor = selectedFigure.StrokeColor;
+                        button2.BackColor = selectedFigure.FillColor;
+                        numericUpDown1.Value = (decimal)selectedFigure.StrokeWidth;
+                        panel5.Visible = true;
+                    }
+                    else
+                    {
+                        selectedFigure = null;
+                        button1.BackColor = strokeColor;
+                        button2.BackColor = fillColor;
+                        numericUpDown1.Value = (decimal)strokeWidth;
+                        panel5.Visible = false;
+                    }
+
+                    if (selectedFigure is IEllipse)
+                        selectedFigure = new EllipseDecorator(selectedFigure as IEllipse);
+
+                    if (selectedFigure is IRectangle)
+                        selectedFigure = new RectangleDecorator(selectedFigure as IRectangle);
+
+                    if (selectedFigure is ICurvePath)
+                        selectedFigure = new CurvePathDecorator(selectedFigure as ICurvePath);
+
+                    Draw();
+
+                }
+
                 if (selectedFigure != null)
                 {
                     isMoving = true;
@@ -171,7 +215,6 @@ namespace VectorEditor
         {
             if (vectorImage != null)
             {
-
                 PointF p = GetImageCoords();
                 x = e.X - p.X; y = e.Y - p.Y;
                 if (isDrawing)
@@ -197,238 +240,12 @@ namespace VectorEditor
                     }
                 }
 
-                if (isMoving)
+                if (isMoving && selectedFigure != null)
                 {
-                    // выделен эллипс
-                    if (selectedFigure != null && selectedFigure is IEllipse)
-                    {
-                        if ((x0 - p.X >= ((IEllipse)selectedFigure).Center.X - ((IEllipse)selectedFigure).RadiusX - 4) &&
-                            (x0 - p.X <= ((IEllipse)selectedFigure).Center.X - ((IEllipse)selectedFigure).RadiusX + 4) &&
-                            (y0 - p.Y >= ((IEllipse)selectedFigure).Center.Y - 4) &&
-                            (y0 - p.Y <= ((IEllipse)selectedFigure).Center.Y + 4))
-                        {
-                            ((IEllipse)selectedFigure).RadiusX += x0 - e.X;
-                            x0 = e.X;
-                            Draw();
-                        }
-                        else
-                            if ((x0 - p.X >= ((IEllipse)selectedFigure).Center.X - 4) &&
-                            (x0 - p.X <= ((IEllipse)selectedFigure).Center.X + 4) &&
-                            (y0 - p.Y >= ((IEllipse)selectedFigure).Center.Y - ((IEllipse)selectedFigure).RadiusY - 4) &&
-                            (y0 - p.Y <= ((IEllipse)selectedFigure).Center.Y - ((IEllipse)selectedFigure).RadiusY + 4))
-                            {
-                                ((IEllipse)selectedFigure).RadiusY += y0 - e.Y;
-                                y0 = e.Y;
-                                Draw();
-                            }
-                            else
-                            {
-                                ((IEllipse)selectedFigure).Center = new PointF(((IEllipse)selectedFigure).Center.X - x0 + e.X,
-                                    ((IEllipse)selectedFigure).Center.Y - y0 + e.Y);
-                                x0 = e.X;
-                                y0 = e.Y;
-                                Draw();
-                            }
-                    }
-                    else
-
-                        // выделен прямоугольник
-                        if (selectedFigure != null && selectedFigure is IRectangle)
-                        {
-                            if ((x0 - p.X >= ((IRectangle)selectedFigure).Left - 4) &&
-                                (x0 - p.X <= ((IRectangle)selectedFigure).Left + 4) &&
-                                (y0 - p.Y >= ((IRectangle)selectedFigure).Top - 4) &&
-                                (y0 - p.Y <= ((IRectangle)selectedFigure).Top + 4))
-                            {
-                                ((IRectangle)selectedFigure).Left += -x0 + e.X;
-                                ((IRectangle)selectedFigure).Top += -y0 + e.Y;
-                                ((IRectangle)selectedFigure).Width += x0 - e.X;
-                                ((IRectangle)selectedFigure).Height += y0 - e.Y;
-
-                                if (((IRectangle)selectedFigure).Width < 0)
-                                {
-                                    ((IRectangle)selectedFigure).Left += ((IRectangle)selectedFigure).Width;
-                                    ((IRectangle)selectedFigure).Width = -((IRectangle)selectedFigure).Width;
-                                }
-
-                                if (((IRectangle)selectedFigure).Height < 0)
-                                {
-                                    ((IRectangle)selectedFigure).Top += ((IRectangle)selectedFigure).Height;
-                                    ((IRectangle)selectedFigure).Height = -((IRectangle)selectedFigure).Height;
-                                }
-
-                                x0 = e.X;
-                                y0 = e.Y;
-                                Draw();
-                            }
-                            else
-                                if ((x0 - p.X >= ((IRectangle)selectedFigure).Left + ((IRectangle)selectedFigure).Width - 4) &&
-                                (x0 - p.X <= ((IRectangle)selectedFigure).Left + ((IRectangle)selectedFigure).Width + 4) &&
-                                (y0 - p.Y >= ((IRectangle)selectedFigure).Top + ((IRectangle)selectedFigure).Height - 4) &&
-                                (y0 - p.Y <= ((IRectangle)selectedFigure).Top + ((IRectangle)selectedFigure).Height + 4))
-                                {
-                                    ((IRectangle)selectedFigure).Width += e.X - x0;
-                                    ((IRectangle)selectedFigure).Height += e.Y - y0;
-
-                                    if (((IRectangle)selectedFigure).Width < 0)
-                                    {
-                                        ((IRectangle)selectedFigure).Left += ((IRectangle)selectedFigure).Width;
-                                        ((IRectangle)selectedFigure).Width = -((IRectangle)selectedFigure).Width;
-                                    }
-
-                                    if (((IRectangle)selectedFigure).Height < 0)
-                                    {
-                                        ((IRectangle)selectedFigure).Top += ((IRectangle)selectedFigure).Height;
-                                        ((IRectangle)selectedFigure).Height = -((IRectangle)selectedFigure).Height;
-                                    }
-
-                                    x0 = e.X;
-                                    y0 = e.Y;
-                                    Draw();
-                                }
-                                else
-                                {
-                                    ((IRectangle)selectedFigure).Left += -x0 + e.X;
-                                    ((IRectangle)selectedFigure).Top += -y0 + e.Y;
-                                    x0 = e.X;
-                                    y0 = e.Y;
-                                    Draw();
-                                }
-                        }
-                        else
-
-                            // выделен путь
-                            if (selectedFigure != null && selectedFigure is ICurvePath)
-                            {
-                                bool f = false;
-
-                                // проверка на перемещение начала
-                                if ((x0 - p.X >= ((ICurvePath)selectedFigure).Start.X - 4) &&
-                                        (x0 - p.X <= ((ICurvePath)selectedFigure).Start.X + 4) &&
-                                        (y0 - p.Y >= ((ICurvePath)selectedFigure).Start.Y - 4) &&
-                                        (y0 - p.Y <= ((ICurvePath)selectedFigure).Start.Y + 4))
-                                {
-
-                                    PointF oldSt = ((ICurvePath)selectedFigure).Start;
-
-                                    ((ICurvePath)selectedFigure).Start =
-                                            new PointF(((ICurvePath)selectedFigure).Start.X - x0 + e.X,
-                                                        ((ICurvePath)selectedFigure).Start.Y - y0 + e.Y);
-
-                                    ((ICurvePath)selectedFigure).Curves[0] = new CurveCoords(((ICurvePath)selectedFigure).Start,
-                                            ((ICurvePath)selectedFigure).Start, ((ICurvePath)selectedFigure).Start);
-
-                                    if (oldSt == ((ICurvePath)selectedFigure).Curves[((ICurvePath)selectedFigure).Curves.Count - 1].P)
-                                        ((ICurvePath)selectedFigure).Curves[((ICurvePath)selectedFigure).Curves.Count - 1] = new CurveCoords(
-                                                ((ICurvePath)selectedFigure).Curves[((ICurvePath)selectedFigure).Curves.Count - 1].P1,
-                                                ((ICurvePath)selectedFigure).Curves[((ICurvePath)selectedFigure).Curves.Count - 1].P2,
-                                                ((ICurvePath)selectedFigure).Start
-                                            );
-
-                                    x0 = e.X;
-                                    y0 = e.Y;
-
-                                    f = true;
-
-                                    Draw();
-                                }
-
-                                // проверка на перемещение узлов
-                                if (!f)
-                                    for (int i = 1; i < ((ICurvePath)selectedFigure).Curves.Count; i++)
-                                    {
-                                        if ((x0 - p.X >= ((ICurvePath)selectedFigure).Curves[i].P.X - 4) &&
-                                            (x0 - p.X <= ((ICurvePath)selectedFigure).Curves[i].P.X + 4) &&
-                                            (y0 - p.Y >= ((ICurvePath)selectedFigure).Curves[i].P.Y - 4) &&
-                                            (y0 - p.Y <= ((ICurvePath)selectedFigure).Curves[i].P.Y + 4))
-                                        {
-                                            ((ICurvePath)selectedFigure).Curves[i] = new CurveCoords(
-                                                    ((ICurvePath)selectedFigure).Curves[i].P1,
-                                                    ((ICurvePath)selectedFigure).Curves[i].P2,
-                                                    new PointF(((ICurvePath)selectedFigure).Curves[i].P.X - x0 + e.X,
-                                                                ((ICurvePath)selectedFigure).Curves[i].P.Y - y0 + e.Y)
-                                                );
-
-                                            x0 = e.X;
-                                            y0 = e.Y;
-
-                                            f = true;
-
-                                            Draw();
-                                        }
-                                    }
-
-                                if (!f)
-                                {
-                                    // проверка на перемещение опорных точек
-                                    for (int i = 1; i < ((ICurvePath)selectedFigure).Curves.Count; i++)
-                                    {
-                                        if ((x0 - p.X >= ((ICurvePath)selectedFigure).Curves[i].P1.X - 4) &&
-                                            (x0 - p.X <= ((ICurvePath)selectedFigure).Curves[i].P1.X + 4) &&
-                                            (y0 - p.Y >= ((ICurvePath)selectedFigure).Curves[i].P1.Y - 4) &&
-                                            (y0 - p.Y <= ((ICurvePath)selectedFigure).Curves[i].P1.Y + 4))
-                                        {
-
-                                            ((ICurvePath)selectedFigure).Curves[i] = new CurveCoords(
-                                                    new PointF(((ICurvePath)selectedFigure).Curves[i].P1.X - x0 + e.X,
-                                                                ((ICurvePath)selectedFigure).Curves[i].P1.Y - y0 + e.Y),
-                                                    ((ICurvePath)selectedFigure).Curves[i].P2,
-                                                    ((ICurvePath)selectedFigure).Curves[i].P
-                                                );
-
-                                            x0 = e.X;
-                                            y0 = e.Y;
-
-                                            f = true;
-                                            isMovingCurve = true;
-
-                                            Draw();
-                                        }
-
-                                        if (!f && (x0 - p.X >= ((ICurvePath)selectedFigure).Curves[i].P2.X - 4) &&
-                                            (x0 - p.X <= ((ICurvePath)selectedFigure).Curves[i].P2.X + 4) &&
-                                            (y0 - p.Y >= ((ICurvePath)selectedFigure).Curves[i].P2.Y - 4) &&
-                                            (y0 - p.Y <= ((ICurvePath)selectedFigure).Curves[i].P2.Y + 4))
-                                        {
-
-                                            ((ICurvePath)selectedFigure).Curves[i] = new CurveCoords(
-                                                    ((ICurvePath)selectedFigure).Curves[i].P1,
-                                                    new PointF(((ICurvePath)selectedFigure).Curves[i].P2.X - x0 + e.X,
-                                                                ((ICurvePath)selectedFigure).Curves[i].P2.Y - y0 + e.Y),
-                                                    ((ICurvePath)selectedFigure).Curves[i].P
-                                                );
-
-                                            x0 = e.X;
-                                            y0 = e.Y;
-
-                                            f = true;
-                                            isMovingCurve = true;
-
-                                            Draw();
-                                        }
-                                    }
-                                }
-
-                                if (!f)
-                                {
-                                    ((ICurvePath)selectedFigure).Start = new PointF(((ICurvePath)selectedFigure).Start.X + e.X - x0,
-                                                                                    ((ICurvePath)selectedFigure).Start.Y + e.Y - y0);
-
-                                    for (int i = 0; i < ((ICurvePath)selectedFigure).Curves.Count; i++)
-                                        ((ICurvePath)selectedFigure).Curves[i] = new CurveCoords(
-                                                    new PointF(((ICurvePath)selectedFigure).Curves[i].P1.X - x0 + e.X,
-                                                                ((ICurvePath)selectedFigure).Curves[i].P1.Y - y0 + e.Y),
-                                                    new PointF(((ICurvePath)selectedFigure).Curves[i].P2.X - x0 + e.X,
-                                                                ((ICurvePath)selectedFigure).Curves[i].P2.Y - y0 + e.Y),
-                                                    new PointF(((ICurvePath)selectedFigure).Curves[i].P.X - x0 + e.X,
-                                                            ((ICurvePath)selectedFigure).Curves[i].P.Y - y0 + e.Y)
-                                                );
-
-                                    x0 = e.X;
-                                    y0 = e.Y;
-                                    Draw();
-                                }
-                            }
+                    PointF p0 = selectedFigure.MouseMove(e.Location, p, new PointF(x0, y0));
+                    x0 = p0.X;
+                    y0 = p0.Y;
+                    Draw();
                 }
             }
         }
@@ -508,43 +325,6 @@ namespace VectorEditor
                         }
                     }
                 }
-                else
-                    if (currentInstrument == Instrument.None && !isMovingCurve)
-                    {
-                        vectorImage.SelectFigure(x, y, 5);
-                        if (vectorImage.SelectedFigure != -1)
-                        {
-                            selectedFigure = vectorImage.Figures[vectorImage.SelectedFigure];
-                            button1.BackColor = selectedFigure.StrokeColor;
-                            button2.BackColor = selectedFigure.FillColor;
-                            numericUpDown1.Value = (decimal)selectedFigure.StrokeWidth;
-                            panel5.Visible = true;
-                        }
-                        else
-                        {
-                            selectedFigure = null;
-                            button1.BackColor = strokeColor;
-                            button2.BackColor = fillColor;
-                            numericUpDown1.Value = (decimal)strokeWidth;
-                            panel5.Visible = false;
-                        }
-
-                        if (selectedFigure is IEllipse)
-                            selectedFigure = new EllipseDecorator(selectedFigure as IEllipse);
-
-                        if (selectedFigure is IRectangle)
-                            selectedFigure = new RectangleDecorator(selectedFigure as IRectangle);
-
-                        if (selectedFigure is ICurvePath)
-                            selectedFigure = new CurvePathDecorator(selectedFigure as ICurvePath);
-
-                        Draw();
-
-                    }
-
-                if (isMovingCurve)
-                    isMovingCurve = false;
-
             }
         }
 
@@ -695,7 +475,7 @@ namespace VectorEditor
             {
                 try
                 {
-                    CreateNew(newDlg.Width, newDlg.Height);
+                    CreateNew(newDlg.ImageWidth, newDlg.ImageHeight);
                     selectedFigure = null;
                     Draw();
                 }

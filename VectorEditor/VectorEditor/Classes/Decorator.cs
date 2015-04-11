@@ -67,6 +67,12 @@ namespace VectorEditor
         {
             return figure.Save();
         }
+
+
+        public PointF MouseMove(Point e, PointF p, PointF p0)
+        {
+            return figure.MouseMove(e, p, p0);
+        }
     }
 
     public class EllipseDecorator : EllipseDecoratorBase
@@ -151,6 +157,12 @@ namespace VectorEditor
         {
             return figure.Save();
         }
+
+
+        public PointF MouseMove(Point e, PointF p, PointF p0)
+        {
+            return figure.MouseMove(e, p, p0);
+        }
     }
 
     public class RectangleDecorator : RectangleDecoratorBase
@@ -222,6 +234,12 @@ namespace VectorEditor
         public string Save()
         {
             return figure.Save();
+        }
+
+
+        public PointF MouseMove(Point e, PointF p, PointF p0)
+        {
+            return figure.MouseMove(e, p, p0);
         }
     }
 
