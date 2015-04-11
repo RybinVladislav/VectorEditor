@@ -32,7 +32,7 @@ namespace VectorEditor
 
         private void OnImageChange()
         {
-            if (OnImageChangeHandler != null)
+            if (OnImageChangeHandler != null && OnImageChangeHandler.GetInvocationList().Any())
                 OnImageChangeHandler(this, new ImageChangeEventArgs(figures));
         }
         

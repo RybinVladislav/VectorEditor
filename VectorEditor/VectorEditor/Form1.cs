@@ -16,7 +16,7 @@ namespace VectorEditor
         {
             InitializeComponent();
 
-            //CreateNew(851, 480);
+            CreateNew(851, 480);
 
             //vectorImage.OnImageChangeHandler += vectorImage_OnImageChangeHandler;
         }
@@ -149,12 +149,12 @@ namespace VectorEditor
                 switch (currentInstrument)
                 {
                     case Instrument.Ellipse:
-                        isDrawing = true;
+                        isDrawing = true; isMoving = false; selectedFigure = null;
                         vectorImage.InsertingFigure = factory.CreateEllipse(new PointF(e.X - p.X, e.Y - p.Y), 0, 0, fillColor, strokeColor, strokeWidth);
                         Draw();
                         break;
                     case Instrument.Rectangle:
-                        isDrawing = true;
+                        isDrawing = true; isMoving = false; selectedFigure = null;
                         vectorImage.InsertingFigure = factory.CreateRectangle(y0 - p.X, x0 - p.Y, 0, 0, fillColor, strokeColor, strokeWidth);
                         Draw();
                         break;
@@ -181,6 +181,10 @@ namespace VectorEditor
                         button2.BackColor = selectedFigure.FillColor;
                         numericUpDown1.Value = (decimal)selectedFigure.StrokeWidth;
                         panel5.Visible = true;
+                        stripBtn1.Enabled = true;
+                        stripBtn2.Enabled = true;
+                        stripBtn3.Enabled = true;
+                        stripBtn4.Enabled = true;
                     }
                     else
                     {
@@ -189,6 +193,10 @@ namespace VectorEditor
                         button2.BackColor = fillColor;
                         numericUpDown1.Value = (decimal)strokeWidth;
                         panel5.Visible = false;
+                        stripBtn1.Enabled = false;
+                        stripBtn2.Enabled = false;
+                        stripBtn3.Enabled = false;
+                        stripBtn4.Enabled = false;
                     }
 
                     if (selectedFigure is IEllipse)
@@ -286,6 +294,7 @@ namespace VectorEditor
                 }
                 if (currentInstrument == Instrument.CurvePath)
                 {
+                    isMoving = false; selectedFigure = null;
                     if (curveStart.IsEmpty && !isDrawing)
                     {
                         curveStart = new PointF(x, y);
@@ -464,18 +473,50 @@ namespace VectorEditor
             button2.BackColor = fillColor;
             numericUpDown1.Value = (decimal)strokeWidth;
             panel5.Visible = false;
+            stripBtn1.Enabled = false;
+            stripBtn2.Enabled = false;
+            stripBtn3.Enabled = false;
+            stripBtn4.Enabled = false;
 
             Draw();
         }
 
         private void новыйToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form2 newDlg = new Form2();
+            Form2 newDlg = new Form2(851, 480);
             if (newDlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 try
                 {
                     CreateNew(newDlg.ImageWidth, newDlg.ImageHeight);
+                    selectedFigure = null;
+                    Draw();
+                }
+                catch (Exception) { }
+            }
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            vectorImage.Figures.Add(selectedFigure.Clone());
+            Draw();
+        }
+
+        private void выходToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void размерИзображенияToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form2 newDlg = new Form2(vectorImage.Width, vectorImage.Height);
+
+            if (newDlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                try
+                {
+                    vectorImage.Width = newDlg.ImageWidth;
+                    vectorImage.Height = newDlg.ImageHeight;
                     selectedFigure = null;
                     Draw();
                 }

@@ -12,15 +12,32 @@ namespace VectorEditor
 {
     public partial class Form2 : Form
     {
-        public Form2()
+        public Form2(int imgWidth, int imgHeight)
         {
             InitializeComponent();
-            ImageWidth = 0;
-            ImageHeight = 0;
+            ImageWidth = imgWidth;
+            ImageHeight = imgHeight;
         }
 
-        public int ImageWidth { get; set; }
-        public int ImageHeight { get; set; }
+        private int imageWidth, imageHeight;
+
+        public int ImageHeight
+        {
+            get { return imageHeight; }
+            set { 
+                imageHeight = value;
+                textBox2.Text = imageHeight.ToString();
+            }
+        }
+
+        public int ImageWidth
+        {
+            get { return imageWidth; }
+            set { 
+                imageWidth = value;
+                textBox1.Text = imageWidth.ToString();
+            }
+        }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {

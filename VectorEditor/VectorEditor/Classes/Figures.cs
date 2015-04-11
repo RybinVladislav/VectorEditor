@@ -61,6 +61,9 @@ namespace VectorEditor
                 (p0.Y - p.Y >= Center.Y - 4) && (p0.Y - p.Y <= Center.Y + 4))
             {
                 RadiusX += p0.X - e.X;
+
+                if (RadiusX < 0) RadiusX = -RadiusX;
+
                 return new PointF(e.X, p0.Y);
             }
             else
@@ -68,6 +71,9 @@ namespace VectorEditor
                 (p0.Y - p.Y >= Center.Y - RadiusY - 4) && (p0.Y - p.Y <= Center.Y - RadiusY + 4))
                 {
                     RadiusY += p0.Y - e.Y;
+
+                    if (RadiusY < 0) RadiusY = -RadiusY;
+
                     return new PointF(p0.X, e.Y);
                 }
                 else
