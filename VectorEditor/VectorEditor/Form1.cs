@@ -17,40 +17,16 @@ namespace VectorEditor
     {
         public Form1()
         {
+			CreateNew(640, 480);
+
             InitializeComponent();
-
-            CreateNew(851, 480);
-
-            //vectorImage.OnImageChangeHandler += vectorImage_OnImageChangeHandler;
         }
 
         void CreateNew(int w, int h)
         {
             vectorImage = new VectorImage(w, h);
         }
-
-        /*
-        void vectorImage_OnImageChangeHandler(object sender, ImageChangeEventArgs e)
-        {
-            treeView1.Nodes.Clear();
-            imageList1.Images.Clear();
-            int a = Math.Max(vectorImage.Width, vectorImage.Height);
-            for (int i = 0; i < e.Figures.Count; i++)
-            {
-                Bitmap bmp = new Bitmap(64, 64);
-                Graphics g = Graphics.FromImage(bmp);
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                e.Figures[i].Draw(g, (float)(64.0 / a));
-
-                imageList1.Images.Add(bmp);
-                treeView1.Nodes.Add(string.Format("Figure{0}", i), string.Format("Figure{0} [{1}]", i, e.Figures[i].GetType().Name), i, i);
-
-                bmp.Dispose();
-                g.Dispose();
-
-            }
-        } */
-
+			
         public VectorImage vectorImage;
         private Factory factory = new Factory();
 
