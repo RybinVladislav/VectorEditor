@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
+<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height = '720px'  width = '1280px'>
+<rect x='414' y='124.5' width='676' height='276' fill='Yellow' stroke='Black' stroke-width='12'></rect>
+<ellipse cx='316.5' cy='205' rx='266.5' ry='134.5' fill='Blue' stroke='White' stroke-width='12'></ellipse>
+<path d='M215 571.5 C215 571.5, 215 571.5, 215 571.5 C22.33337 367.1667, 249.6667 114.8333, 678 72.5 C943.6667 56.83337, 1149.333 363.1667, 1085 637.5 C703 143.5, 319 673.5, 215 571.5 ' fill='Transparent' stroke='#FF8000' stroke-width='5'></path>
+</svg>

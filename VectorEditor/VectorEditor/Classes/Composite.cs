@@ -17,6 +17,7 @@ namespace VectorEditor
         void Remove(IComponent element);
     }
 
+    [Serializable]
     public class Component : IComponent
     {
         public void Operation()

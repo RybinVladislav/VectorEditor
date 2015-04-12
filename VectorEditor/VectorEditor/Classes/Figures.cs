@@ -8,6 +8,7 @@ using System.Drawing.Drawing2D;
 
 namespace VectorEditor
 {
+    [Serializable]
     public class Ellipse : Component, IEllipse
     {
         public PointF Center { get; set; }
@@ -84,6 +85,7 @@ namespace VectorEditor
         }
     }
 
+    [Serializable]
     public class Rectangle : Component, IRectangle
     {
         public float Top { get; set; }
@@ -190,6 +192,7 @@ namespace VectorEditor
         }
     }
 
+    [Serializable]
     public class CurvePath : Component, ICurvePath
     {
         public PointF Start { get; set; }

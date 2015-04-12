@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace VectorEditor
 {
@@ -85,7 +88,7 @@ namespace VectorEditor
 
             if (vectorImage != null)
             {
-                Bitmap bmp = new Bitmap(vectorImage.Width, vectorImage.Height);
+                Bitmap bmp = new Bitmap((int)(vectorImage.Width * scale), (int)(vectorImage.Height * scale));
                 Graphics g = Graphics.FromImage(bmp);
 
                 // начало координат для изображения
@@ -389,11 +392,6 @@ namespace VectorEditor
             }
         }
 
-        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            //vectorImage.SelectedFigure = e.Node.Index;
-        }
-
         private void Form1_Resize(object sender, EventArgs e)
         {
             Draw();
@@ -521,6 +519,59 @@ namespace VectorEditor
                     Draw();
                 }
                 catch (Exception) { }
+            }
+        }
+
+        void Serialize(string filename)
+        {
+            IFormatter formatter = (IFormatter)new BinaryFormatter();
+
+            Stream stream = new FileStream(filename, FileMode.Create, FileAccess.Write);
+            formatter.Serialize(stream, vectorImage);
+            stream.Close();
+        }
+
+        void Deserialize(string filename)
+        {
+            IFormatter formatter = (IFormatter)new BinaryFormatter();
+
+            Stream stream = new FileStream(filename, FileMode.Open, FileAccess.Read);
+            vectorImage = (VectorImage)formatter.Deserialize(stream);
+            stream.Close();
+        }
+
+        private void сохранитьКакToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialog2.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                Serialize(saveFileDialog2.FileName);
+            }
+        }
+
+        private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+
+                try 
+                {
+                    Deserialize(openFileDialog1.FileName);
+                    selectedFigure = null;
+                    button1.BackColor = strokeColor;
+                    button2.BackColor = fillColor;
+                    numericUpDown1.Value = (decimal)strokeWidth;
+                    panel5.Visible = false;
+                    stripBtn1.Enabled = false;
+                    stripBtn2.Enabled = false;
+                    stripBtn3.Enabled = false;
+                    stripBtn4.Enabled = false;
+
+                    Draw();
+                }
+                catch (Exception) 
+                {
+                    MessageBox.Show("Файл имеет неверный формат");
+                }
             }
         }
     }

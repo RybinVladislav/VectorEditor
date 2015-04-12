@@ -25,6 +25,7 @@ namespace VectorEditor
     public delegate void ImageChangeEventHandler(object sender, ImageChangeEventArgs e);
 
     // класс векторного изображения
+    [Serializable]
     public class VectorImage : IDrawable
     {
         //событие высылаемое при изменении свойства Figures
@@ -114,10 +115,10 @@ namespace VectorEditor
 
             //отрисовка границ изображения
             Pen p = new Pen(Color.Black, 3F);
-            g.DrawLine(p, new PointF(0, 0), new PointF(Width - 1, 0));
-            g.DrawLine(p, new PointF(0, Height - 1), new PointF(Width - 1, Height - 1));
-            g.DrawLine(p, new PointF(0, 0), new PointF(0, Height - 1));
-            g.DrawLine(p, new PointF(Width - 1, 0), new PointF(Width - 1, Height - 1));
+            g.DrawLine(p, new PointF(0, 0), new PointF(scale * Width - 1, 0));
+            g.DrawLine(p, new PointF(0, scale * Height - 1), new PointF(scale * Width - 1, scale * Height - 1));
+            g.DrawLine(p, new PointF(0, 0), new PointF(0, scale * Height - 1));
+            g.DrawLine(p, new PointF(scale * Width - 1, 0), new PointF(scale * Width - 1, scale * Height - 1));
         }
 
         public void SelectFigure(float x, float y, int r)

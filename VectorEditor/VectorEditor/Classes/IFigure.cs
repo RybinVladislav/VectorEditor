@@ -44,6 +44,7 @@ namespace VectorEditor
         float Height { get; set; } 
     }
 
+    [Serializable]
     public struct CurveCoords
     {
         public PointF P1;
