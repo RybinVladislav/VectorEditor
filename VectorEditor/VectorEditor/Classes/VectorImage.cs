@@ -219,5 +219,18 @@ namespace VectorEditor
             w.Close();
             f.Close();
         }
+
+        // Originator
+        
+        public Memento CreateMemento()
+        {
+            return new Memento(figures);
+        }
+
+        // Restores original state
+        public void SetMemento(Memento memento)
+        {
+            figures = memento.State;
+        }
     }
 }

@@ -62,6 +62,7 @@
     <Compile Include="Classes\Decorator.cs" />
     <Compile Include="Classes\Factory.cs" />
     <Compile Include="Classes\Figures.cs" />
+    <Compile Include="Classes\Memento.cs" />
     <Compile Include="Classes\VectorImage.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

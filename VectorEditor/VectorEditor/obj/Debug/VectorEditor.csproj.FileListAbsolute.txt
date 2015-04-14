@@ -1,0 +1,10 @@
+C:\Users\fgnmgm\Documents\GitHub\VectorEditor\VectorEditor\VectorEditor\bin\Debug\VectorEditor.exe.config
+C:\Users\fgnmgm\Documents\GitHub\VectorEditor\VectorEditor\VectorEditor\obj\Debug\VectorEditor.exe
+C:\Users\fgnmgm\Documents\GitHub\VectorEditor\VectorEditor\VectorEditor\obj\Debug\VectorEditor.pdb
+C:\Users\fgnmgm\Documents\GitHub\VectorEditor\VectorEditor\VectorEditor\bin\Debug\VectorEditor.exe
+C:\Users\fgnmgm\Documents\GitHub\VectorEditor\VectorEditor\VectorEditor\bin\Debug\VectorEditor.pdb
+C:\Users\fgnmgm\Documents\GitHub\VectorEditor\VectorEditor\VectorEditor\obj\Debug\VectorEditor.csprojResolveAssemblyReference.cache
+C:\Users\fgnmgm\Documents\GitHub\VectorEditor\VectorEditor\VectorEditor\obj\Debug\VectorEditor.Form1.resources
+C:\Users\fgnmgm\Documents\GitHub\VectorEditor\VectorEditor\VectorEditor\obj\Debug\VectorEditor.Form2.resources
+C:\Users\fgnmgm\Documents\GitHub\VectorEditor\VectorEditor\VectorEditor\obj\Debug\VectorEditor.Properties.Resources.resources
+C:\Users\fgnmgm\Documents\GitHub\VectorEditor\VectorEditor\VectorEditor\obj\Debug\VectorEditor.csproj.GenerateResource.Cache

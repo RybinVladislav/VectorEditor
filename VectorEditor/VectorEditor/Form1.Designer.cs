@@ -70,6 +70,8 @@
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog2 = new System.Windows.Forms.SaveFileDialog();
+            this.undoButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel5.SuspendLayout();
@@ -150,6 +152,8 @@
             // правкаToolStripMenuItem
             // 
             this.правкаToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.undoButton,
+            this.toolStripMenuItem6,
             this.stripBtn1,
             this.toolStripMenuItem3,
             this.stripBtn2,
@@ -436,6 +440,19 @@
             // 
             this.saveFileDialog2.Filter = "Binary File (*.dat)|*.dat";
             // 
+            // undoButton
+            // 
+            this.undoButton.Enabled = false;
+            this.undoButton.Name = "undoButton";
+            this.undoButton.Size = new System.Drawing.Size(229, 24);
+            this.undoButton.Text = "Отменить";
+            this.undoButton.Click += new System.EventHandler(this.отменитьToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem6
+            // 
+            this.toolStripMenuItem6.Name = "toolStripMenuItem6";
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(226, 6);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -507,6 +524,8 @@
         private System.Windows.Forms.ToolStripMenuItem сохранитьКакToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog2;
+        private System.Windows.Forms.ToolStripMenuItem undoButton;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
 
     }
 }

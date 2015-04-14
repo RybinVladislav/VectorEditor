@@ -17,18 +17,34 @@ namespace VectorEditor
     {
         public Form1()
         {
-			CreateNew(640, 480);
-
             InitializeComponent();
+
+            CreateNew(640, 480);
         }
 
         void CreateNew(int w, int h)
         {
             vectorImage = new VectorImage(w, h);
+            caretaker = new Caretaker();
+            undoButton.Enabled = false;
         }
-			
+
+        void SaveMemento()
+        {
+            caretaker.Memento = vectorImage.CreateMemento();
+            undoButton.Enabled = true;
+        }
+
+        void Undo()
+        {
+            vectorImage.SetMemento(caretaker.Memento);
+            undoButton.Enabled = false;
+            Draw();
+        }
+
         public VectorImage vectorImage;
         private Factory factory = new Factory();
+        Caretaker caretaker;
 
         public Color fillColor = Color.Transparent;
         public Color strokeColor = Color.Black;
@@ -110,6 +126,7 @@ namespace VectorEditor
         bool isDrawing = false;
 
         bool isMoving = false;
+        bool moving = false;
 
         float x0, y0, x, y;
         IList<CurveCoords> curvePoints = new List<CurveCoords>();
@@ -241,14 +258,15 @@ namespace VectorEditor
         {
             if (vectorImage != null)
             {
-
                 Focus();
                 PointF p = GetImageCoords();
                 x = e.X - p.X; y = e.Y - p.Y;
 
                 if (isMoving)
                 {
+                    //SaveMemento();
                     isMoving = false;
+                    moving = false;
                 }
 
                 if (isDrawing)
@@ -256,6 +274,7 @@ namespace VectorEditor
                     switch (currentInstrument)
                     {
                         case Instrument.Ellipse:
+                            SaveMemento();
                             vectorImage.InsertingFigure = null;
                             isDrawing = false;
                             vectorImage.AddEllipse(factory, new PointF((x0 - p.X + x) / 2, (y0 - p.Y + y) / 2),
@@ -263,6 +282,7 @@ namespace VectorEditor
                             Draw();
                             break;
                         case Instrument.Rectangle:
+                            SaveMemento();
                             vectorImage.InsertingFigure = null;
                             isDrawing = false;
                             vectorImage.AddRectangle(factory, Math.Min(y0 - p.Y, y), Math.Min(x0 - p.X, x),
@@ -294,6 +314,9 @@ namespace VectorEditor
                             PointF p2 = new PointF(curvePoints[curvePoints.Count - 1].P.X / 3 + 2 * curveStart.X / 3,
                                 curvePoints[curvePoints.Count - 1].P.Y / 3 + 2 * curveStart.Y / 3);
                             curvePoints.Add(new CurveCoords(p1, p2, curveStart));
+
+                            SaveMemento();
+
                             vectorImage.InsertingFigure = null;
                             isDrawing = false;
                             vectorImage.AddCurvePath(factory, curveStart, curvePoints, fillColor, strokeColor, strokeWidth);
@@ -348,6 +371,9 @@ namespace VectorEditor
                 //PointF p1 = new PointF(2 * curvePoints[curvePoints.Count - 1].P.X / 3 + x / 3, 2 * curvePoints[curvePoints.Count - 1].P.Y / 3 + y / 3);
                 //PointF p2 = new PointF(curvePoints[curvePoints.Count - 1].P.X / 3 + 2 * x / 3, curvePoints[curvePoints.Count - 1].P.Y / 3 + 2 * y / 3);
                 //curvePoints.Add(new CurveCoords(p1, p2, new PointF(x, y)));
+
+                SaveMemento();
+
                 vectorImage.InsertingFigure = null;
                 isDrawing = false;
                 vectorImage.AddCurvePath(factory, curveStart, curvePoints, fillColor, strokeColor, strokeWidth);
@@ -382,6 +408,7 @@ namespace VectorEditor
                     strokeColor = colorDialog1.Color;
                 else
                 {
+                    SaveMemento();
                     selectedFigure.StrokeColor = colorDialog1.Color;
                     Draw();
                 }
@@ -398,6 +425,7 @@ namespace VectorEditor
                     fillColor = colorDialog1.Color;
                 else
                 {
+                    SaveMemento();
                     selectedFigure.FillColor = colorDialog1.Color;
                     Draw();
                 }
@@ -412,6 +440,7 @@ namespace VectorEditor
                 strokeWidth = (float)numericUpDown1.Value;
             else
             {
+                SaveMemento();
                 selectedFigure.StrokeWidth = (float)numericUpDown1.Value;
                 Draw();
             }
@@ -419,12 +448,14 @@ namespace VectorEditor
 
         private void button7_Click(object sender, EventArgs e)
         {
+            SaveMemento();
             vectorImage.LevelUp(vectorImage.Figures[vectorImage.SelectedFigure]);
             Draw();
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
+            SaveMemento();
             vectorImage.LevelDown(vectorImage.Figures[vectorImage.SelectedFigure]);
             Draw();
         }
@@ -439,6 +470,8 @@ namespace VectorEditor
 
         private void button9_Click(object sender, EventArgs e)
         {
+            SaveMemento();
+
             selectedFigure = null;
             vectorImage.Figures.RemoveAt(vectorImage.SelectedFigure);
             vectorImage.SelectedFigure = -1;
@@ -472,6 +505,7 @@ namespace VectorEditor
 
         private void button10_Click(object sender, EventArgs e)
         {
+            SaveMemento();
             vectorImage.Figures.Add(selectedFigure.Clone());
             Draw();
         }
@@ -549,6 +583,11 @@ namespace VectorEditor
                     MessageBox.Show("Файл имеет неверный формат");
                 }
             }
+        }
+
+        private void отменитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Undo();
         }
     }
 }
