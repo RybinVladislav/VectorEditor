@@ -173,8 +173,8 @@ namespace VectorEditor
                     if (vectorImage.SelectedFigure != -1)
                     {
                         selectedFigure = vectorImage.Figures[vectorImage.SelectedFigure];
-                        button1.BackColor = selectedFigure.StrokeColor;
-                        button2.BackColor = selectedFigure.FillColor;
+                        borderColorButton.BackColor = selectedFigure.StrokeColor;
+                        fillColorButton.BackColor = selectedFigure.FillColor;
                         numericUpDown1.Value = (decimal)selectedFigure.StrokeWidth;
                         panel5.Visible = true;
                         stripBtn1.Enabled = true;
@@ -185,8 +185,8 @@ namespace VectorEditor
                     else
                     {
                         selectedFigure = null;
-                        button1.BackColor = strokeColor;
-                        button2.BackColor = fillColor;
+                        borderColorButton.BackColor = strokeColor;
+                        fillColorButton.BackColor = fillColor;
                         numericUpDown1.Value = (decimal)strokeWidth;
                         panel5.Visible = false;
                         stripBtn1.Enabled = false;
@@ -339,30 +339,6 @@ namespace VectorEditor
             }
         }
 
-        private void toolStripButton1_Click(object sender, EventArgs e)
-        {
-            currentInstrument = Instrument.Ellipse;
-            Focus();
-        }
-
-        private void toolStripButton2_Click(object sender, EventArgs e)
-        {
-            currentInstrument = Instrument.None;
-            Focus();
-        }
-
-        private void toolStripButton3_Click(object sender, EventArgs e)
-        {
-            currentInstrument = Instrument.Rectangle;
-            Focus();
-        }
-
-        private void toolStripButton5_Click(object sender, EventArgs e)
-        {
-            currentInstrument = Instrument.CurvePath;
-            Focus();
-        }
-
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
             if (isDrawing && currentInstrument == Instrument.CurvePath && e.KeyData == Keys.Enter)
@@ -398,42 +374,7 @@ namespace VectorEditor
         {
             Draw();
         }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            colorDialog1.Color = button1.BackColor;
-            if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                if (selectedFigure == null)
-                    strokeColor = colorDialog1.Color;
-                else
-                {
-                    SaveMemento();
-                    selectedFigure.StrokeColor = colorDialog1.Color;
-                    Draw();
-                }
-                button1.BackColor = colorDialog1.Color;
-            }
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            colorDialog1.Color = button2.BackColor;
-            if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                if (selectedFigure == null)
-                    fillColor = colorDialog1.Color;
-                else
-                {
-                    SaveMemento();
-                    selectedFigure.FillColor = colorDialog1.Color;
-                    Draw();
-                }
-                button2.BackColor = colorDialog1.Color;
-            }
-            
-        }
-
+  
         private void numericUpDown1_ValueChanged(object sender, EventArgs e)
         {
             if (selectedFigure == null)
@@ -446,14 +387,14 @@ namespace VectorEditor
             }
         }
 
-        private void button7_Click(object sender, EventArgs e)
+        private void lvlUpButton_Click(object sender, EventArgs e)
         {
             SaveMemento();
             vectorImage.LevelUp(vectorImage.Figures[vectorImage.SelectedFigure]);
             Draw();
         }
 
-        private void button8_Click(object sender, EventArgs e)
+        private void lvlDownButton_Click(object sender, EventArgs e)
         {
             SaveMemento();
             vectorImage.LevelDown(vectorImage.Figures[vectorImage.SelectedFigure]);
@@ -466,26 +407,6 @@ namespace VectorEditor
             {
                 vectorImage.Save(saveFileDialog1.FileName);
             }
-        }
-
-        private void button9_Click(object sender, EventArgs e)
-        {
-            SaveMemento();
-
-            selectedFigure = null;
-            vectorImage.Figures.RemoveAt(vectorImage.SelectedFigure);
-            vectorImage.SelectedFigure = -1;
-
-            button1.BackColor = strokeColor;
-            button2.BackColor = fillColor;
-            numericUpDown1.Value = (decimal)strokeWidth;
-            panel5.Visible = false;
-            stripBtn1.Enabled = false;
-            stripBtn2.Enabled = false;
-            stripBtn3.Enabled = false;
-            stripBtn4.Enabled = false;
-
-            Draw();
         }
 
         private void новыйToolStripMenuItem_Click(object sender, EventArgs e)
@@ -503,7 +424,7 @@ namespace VectorEditor
             }
         }
 
-        private void button10_Click(object sender, EventArgs e)
+        private void copyButton_Click(object sender, EventArgs e)
         {
             SaveMemento();
             vectorImage.Figures.Add(selectedFigure.Clone());
@@ -541,6 +462,84 @@ namespace VectorEditor
             stream.Close();
         }
 
+        private void deleteButton_Click(object sender, EventArgs e)
+        {
+            SaveMemento();
+
+            selectedFigure = null;
+            vectorImage.Figures.RemoveAt(vectorImage.SelectedFigure);
+            vectorImage.SelectedFigure = -1;
+
+            borderColorButton.BackColor = strokeColor;
+            fillColorButton.BackColor = fillColor;
+            numericUpDown1.Value = (decimal)strokeWidth;
+            panel5.Visible = false;
+            stripBtn1.Enabled = false;
+            stripBtn2.Enabled = false;
+            stripBtn3.Enabled = false;
+            stripBtn4.Enabled = false;
+
+            Draw();
+        }
+
+        private void borderColorButton_Click(object sender, EventArgs e)
+        {
+            colorDialog1.Color = borderColorButton.BackColor;
+            if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if (selectedFigure == null)
+                    strokeColor = colorDialog1.Color;
+                else
+                {
+                    SaveMemento();
+                    selectedFigure.StrokeColor = colorDialog1.Color;
+                    Draw();
+                }
+                borderColorButton.BackColor = colorDialog1.Color;
+            }
+        }
+
+        private void fillColorButton_Click(object sender, EventArgs e)
+        {
+            colorDialog1.Color = fillColorButton.BackColor;
+            if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if (selectedFigure == null)
+                    fillColor = colorDialog1.Color;
+                else
+                {
+                    SaveMemento();
+                    selectedFigure.FillColor = colorDialog1.Color;
+                    Draw();
+                }
+                fillColorButton.BackColor = colorDialog1.Color;
+            }
+        }
+
+        private void pathButton_Click(object sender, EventArgs e)
+        {
+            currentInstrument = Instrument.CurvePath;
+            Focus();
+        }
+
+        private void actionButton_Click(object sender, EventArgs e)
+        {
+            currentInstrument = Instrument.None;
+            Focus();
+        }
+
+        private void ellipseButton_Click(object sender, EventArgs e)
+        {
+            currentInstrument = Instrument.Ellipse;
+            Focus();
+        }
+
+        private void rectangleButton_Click(object sender, EventArgs e)
+        {
+            currentInstrument = Instrument.Rectangle;
+            Focus();
+        }
+
         void Deserialize(string filename)
         {
             IFormatter formatter = (IFormatter)new BinaryFormatter();
@@ -567,8 +566,8 @@ namespace VectorEditor
                 {
                     Deserialize(openFileDialog1.FileName);
                     selectedFigure = null;
-                    button1.BackColor = strokeColor;
-                    button2.BackColor = fillColor;
+                    borderColorButton.BackColor = strokeColor;
+                    fillColorButton.BackColor = fillColor;
                     numericUpDown1.Value = (decimal)strokeWidth;
                     panel5.Visible = false;
                     stripBtn1.Enabled = false;
