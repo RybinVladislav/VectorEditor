@@ -15,7 +15,7 @@ namespace VectorEditor
 {
     public partial class Form1 : Form
     {
-        public Form1()
+        public Form1() 
         {
             InitializeComponent();
 
@@ -50,7 +50,7 @@ namespace VectorEditor
         public Color strokeColor = Color.Black;
         public float strokeWidth = 2F;
 
-        public IFigure selectedFigure = null;
+        public List<IFigure> selectedFigures = new List<IFigure>();
 
         float scale = 1;
 
@@ -91,8 +91,8 @@ namespace VectorEditor
                 g.Clear(Color.White);
                 vectorImage.Draw(g, scale);
 
-                if (selectedFigure != null)
-                    selectedFigure.Draw(g, scale);
+                foreach (IFigure figure in selectedFigures)
+                    figure.Draw(g, scale);
 
                 g1.DrawImage(bmp, X0 + p.X, Y0 + p.Y, vectorImage.Width * scale, vectorImage.Height * scale);
 
@@ -145,12 +145,12 @@ namespace VectorEditor
                 switch (currentInstrument)
                 {
                     case Instrument.Ellipse:
-                        isDrawing = true; isMoving = false; selectedFigure = null;
+                        isDrawing = true; isMoving = false; selectedFigures = new List<IFigure>();
                         vectorImage.InsertingFigure = factory.CreateEllipse(new PointF(e.X - p.X, e.Y - p.Y), 0, 0, fillColor, strokeColor, strokeWidth);
                         Draw();
                         break;
                     case Instrument.Rectangle:
-                        isDrawing = true; isMoving = false; selectedFigure = null;
+                        isDrawing = true; isMoving = false; selectedFigures = new List<IFigure>();
                         vectorImage.InsertingFigure = factory.CreateRectangle(y0 - p.X, x0 - p.Y, 0, 0, fillColor, strokeColor, strokeWidth);
                         Draw();
                         break;
@@ -293,7 +293,7 @@ namespace VectorEditor
                 }
                 if (currentInstrument == Instrument.CurvePath)
                 {
-                    isMoving = false; selectedFigure = null;
+                    isMoving = false; selectedFigures = new List<IFigure>();
                     if (curveStart.IsEmpty && !isDrawing)
                     {
                         curveStart = new PointF(x, y);
@@ -377,14 +377,12 @@ namespace VectorEditor
   
         private void numericUpDown1_ValueChanged(object sender, EventArgs e)
         {
-            if (selectedFigure == null)
-                strokeWidth = (float)numericUpDown1.Value;
-            else
+            SaveMemento();
+            foreach (IFigure figure in selectedFigures)
             {
-                SaveMemento();
-                selectedFigure.StrokeWidth = (float)numericUpDown1.Value;
-                Draw();
+                    figure.StrokeWidth = (float)numericUpDown1.Value; 
             }
+            Draw();
         }
 
         private void lvlUpButton_Click(object sender, EventArgs e)
@@ -417,7 +415,7 @@ namespace VectorEditor
                 try
                 {
                     CreateNew(newDlg.ImageWidth, newDlg.ImageHeight);
-                    selectedFigure = null;
+                    selectedFigures = new List<IFigure>();
                     Draw();
                 }
                 catch (Exception) { }
@@ -427,7 +425,8 @@ namespace VectorEditor
         private void copyButton_Click(object sender, EventArgs e)
         {
             SaveMemento();
-            vectorImage.Figures.Add(selectedFigure.Clone());
+            foreach (IFigure figure in selectedFigures)
+                vectorImage.Figures.Add(figure.Clone());
             Draw();
         }
 
@@ -446,7 +445,7 @@ namespace VectorEditor
                 {
                     vectorImage.Width = newDlg.ImageWidth;
                     vectorImage.Height = newDlg.ImageHeight;
-                    selectedFigure = null;
+                    selectedFigures = new List<IFigure>();
                     Draw();
                 }
                 catch (Exception) { }
@@ -466,7 +465,7 @@ namespace VectorEditor
         {
             SaveMemento();
 
-            selectedFigure = null;
+            selectedFigures = new List<IFigure>();
             vectorImage.Figures.RemoveAt(vectorImage.SelectedFigure);
             vectorImage.SelectedFigure = -1;
 
@@ -487,14 +486,10 @@ namespace VectorEditor
             colorDialog1.Color = borderColorButton.BackColor;
             if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                if (selectedFigure == null)
-                    strokeColor = colorDialog1.Color;
-                else
-                {
                     SaveMemento();
-                    selectedFigure.StrokeColor = colorDialog1.Color;
+                    foreach (IFigure figure in selectedFigures)
+                        figure.StrokeColor = colorDialog1.Color;
                     Draw();
-                }
                 borderColorButton.BackColor = colorDialog1.Color;
             }
         }
@@ -504,14 +499,10 @@ namespace VectorEditor
             colorDialog1.Color = fillColorButton.BackColor;
             if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                if (selectedFigure == null)
-                    fillColor = colorDialog1.Color;
-                else
-                {
                     SaveMemento();
-                    selectedFigure.FillColor = colorDialog1.Color;
+                    foreach (IFigure figure in selectedFigures)
+                        figure.FillColor = colorDialog1.Color;
                     Draw();
-                }
                 fillColorButton.BackColor = colorDialog1.Color;
             }
         }
@@ -565,7 +556,7 @@ namespace VectorEditor
                 try 
                 {
                     Deserialize(openFileDialog1.FileName);
-                    selectedFigure = null;
+                    selectedFigures = new List<IFigure>();
                     borderColorButton.BackColor = strokeColor;
                     fillColorButton.BackColor = fillColor;
                     numericUpDown1.Value = (decimal)strokeWidth;
